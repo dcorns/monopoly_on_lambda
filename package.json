@@ -1,0 +1,18 @@
+{
+  "name": "monopoly_on_lambda",
+  "version": "1.0.0",
+  "description": "Back end for monopoly prize tracking for deployment to AWS Lambda",
+  "main": "index.js",
+  "repository": "https://github.com/dcorns/monopoly_on_lambda.git",
+  "author": "Dale Corns <codecantor@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index"
+  },
+  "dependencies": {
+    "aws-serverless-express": "^2.2.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0"
+  }
+}
