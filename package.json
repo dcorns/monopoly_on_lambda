@@ -6,6 +6,13 @@
   "repository": "https://github.com/dcorns/monopoly_on_lambda.git",
   "author": "Dale Corns <codecantor@gmail.com>",
   "license": "MIT",
+  "config": {
+    "s3BucketName": "monopoly-static-assets",
+    "region": "US West",
+    "cloudFormationStackName": "AwsServerlessExpressStack",
+    "functionName": "YOUR_SERVERLESS_EXPRESS_LAMBDA_FUNCTION_NAME",
+    "accountId": "779503103633"
+  },
   "scripts": {
     "start": "node index",
     "config": "node ./scripts/configure.js",
