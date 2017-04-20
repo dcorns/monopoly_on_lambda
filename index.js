@@ -5,12 +5,12 @@
  * MIT Licensed
  */
 'use strict';
-var express = require('express');
-var bodyParser = require('body-parser');
-var corngoose = require('corngoose');
-var app = express();
+const express = require('express');
+const bodyParser = require('body-parser');
+const corngoose = require('corngoose');
+const app = express();
 app.use(bodyParser.json());
-var port = process.env.PORT || 3000;
+//const port = process.env.PORT || 3000;
 corngoose.startDB('monopoly');
 app.use(express.static(__dirname + '/public'));
 
@@ -39,6 +39,8 @@ app.post('/updatePrize', function(req, res){
   });
 });
 
-var server = app.listen(port, 'localhost', function(){
-  console.log('Server listening on port ' + port);
-});
+// const server = app.listen(port, 'localhost', function(){
+//   console.log('Server listening on port ' + port);
+// });
+
+module.exports = app;
