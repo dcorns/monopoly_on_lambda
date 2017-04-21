@@ -14,6 +14,11 @@ app.use(bodyParser.json());
 //corngoose.startDB('monopoly');
 app.use(express.static(__dirname + '/public'));
 
+app.get('/', (req, res) => {
+  res.render('index', {
+    apiUrl: `https://${req.apiGateway.event.headers.Host}/${req.apiGateway.event.requestContext.stage}`
+  })
+});
 // app.get('/allPrizeData', function(req, res){
 //   corngoose.getCollection('prizes', function(err, data){
 //     if (err){
