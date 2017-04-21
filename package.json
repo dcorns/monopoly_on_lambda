@@ -7,10 +7,10 @@
   "author": "Dale Corns <codecantor@gmail.com>",
   "license": "MIT",
   "config": {
-    "s3BucketName": "monopoly-static-assets",
-    "region": "us-west-2b",
+    "s3BucketName": "prize-tracker-root",
+    "region": "us-west-2",
     "cloudFormationStackName": "AwsServerlessExpressStack",
-    "functionName": "YOUR_SERVERLESS_EXPRESS_LAMBDA_FUNCTION_NAME",
+    "functionName": "PrizeTrackerExpressFunction",
     "accountId": "779503103633"
   },
   "scripts": {
