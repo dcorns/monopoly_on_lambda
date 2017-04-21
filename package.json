@@ -8,7 +8,7 @@
   "license": "MIT",
   "config": {
     "s3BucketName": "monopoly-static-assets",
-    "region": "us-west-2",
+    "region": "us-west-2b",
     "cloudFormationStackName": "AwsServerlessExpressStack",
     "functionName": "YOUR_SERVERLESS_EXPRESS_LAMBDA_FUNCTION_NAME",
     "accountId": "779503103633"
