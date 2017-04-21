@@ -2,14 +2,14 @@
   "name": "monopoly_on_lambda",
   "version": "1.0.0",
   "description": "Back end for monopoly prize tracking for deployment to AWS Lambda",
-  "main": "index.js",
+  "main": "lambda.js",
   "repository": "https://github.com/dcorns/monopoly_on_lambda.git",
   "author": "Dale Corns <codecantor@gmail.com>",
   "license": "MIT",
   "config": {
     "s3BucketName": "prize-tracker-root",
     "region": "us-west-2",
-    "cloudFormationStackName": "AwsServerlessExpressStack",
+    "cloudFormationStackName": "PrizeTrackerExpressStack",
     "functionName": "PrizeTrackerExpressFunction",
     "accountId": "779503103633"
   },
