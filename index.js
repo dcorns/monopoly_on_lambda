@@ -40,8 +40,6 @@ const prizeData = [{"_id":{"$oid":"56d0da05a1f6053f7b7f5a75"},"name":"Cash $5.00
 {"_id":{"$oid":"589fb1fb0aee383e8a17aa82"},"name":"Laptop Computer","value":1000,"available":100,"tickets":{"required":4,"partList":["8M53A",6,"8M54B",0,"8M55C",6,"8M56D",9,null,null,null,null,null,null,null,null,null],"winner":"8M54B"},"startAvailable":100,"viewId":"p30"}];
 const app = express();
 app.use(bodyParser.json());
-//const port = process.env.PORT || 3000;
-corngoose.startDB('monopoly');
 
 app.get('/allPrizeData', function(req, res){
   res.json(prizeData);
