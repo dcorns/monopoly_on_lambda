@@ -7,6 +7,7 @@
 'use strict';
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const prizeData = [{"_id":{"$oid":"56d0da05a1f6053f7b7f5a75"},"name":"Cash $5.00","value":5.0,"available":800000.0,"tickets":{"required":4,"partList":["9J36A",7,"9J37B",0,"9J38C",12,"9J39D",7,null,null,null,null,null,null,null,null,null],"winner":"9J37B"},"startAvailable":800000.0,"viewId":"p7"},
 {"_id":{"$oid":"56d0daaea1f6053f7b7f5a76"},"name":"Cash $10.00","value":10,"available":37500,"tickets":{"required":4,"partList":["9G28A",14,"9G29B",8,"9G30C",14,"9G31D",0,null,null,null,null,null,null,null,null,null],"winner":"9G31D"},"viewId":"p6"},
 {"_id":{"$oid":"56d0db34a1f6053f7b7f5a77"},"name":"Cash $25.00","value":25.0,"available":10000.0,"tickets":{"required":4,"partList":["9C12A",7,"9C13B",10,"9C14C",10,"9C15D",0,null,null,null,null,null,null,null,null,null],"winner":"9C15D"},"viewId":"p5"},
@@ -40,7 +41,7 @@ const prizeData = [{"_id":{"$oid":"56d0da05a1f6053f7b7f5a75"},"name":"Cash $5.00
 {"_id":{"$oid":"589fb1fb0aee383e8a17aa82"},"name":"Laptop Computer","value":1000,"available":100,"tickets":{"required":4,"partList":["8M53A",6,"8M54B",0,"8M55C",6,"8M56D",9,null,null,null,null,null,null,null,null,null],"winner":"8M54B"},"startAvailable":100,"viewId":"p30"}];
 const app = express();
 app.use(bodyParser.json());
-
+app.use(cors());
 app.get('/allPrizeData', function(req, res){
   res.json(prizeData);
 });
