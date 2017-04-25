@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.get('/allPrizeData', function(req, res){
   console.log('allPrizesCalled');
-  https.get('https://monopoly-d9e3c.firebaseio.com/.json', (fbres) => {
+  https.get('https://monopoly-d9e3c.firebaseio.com/dcorns.json', (fbres) => {
     console.log('inside https.get');
     fbres.on('data', (d) => {
       console.log('inside fbres');
