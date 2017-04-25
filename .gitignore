@@ -1,2 +1,6 @@
 yarn.lock
 /archive.zip
+prizedata.json
+test.json
+mockData.json
+localIndex.js
