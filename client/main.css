@@ -1,0 +1,20 @@
+.winnerTxt{
+    fill: black;
+}
+.partTxt{
+    fill: #C6DEF1;
+}
+.addTxt{
+    fill: #508EA5;
+}
+.less{
+    opacity: .2;
+    fill: #ffffff;
+}
+.winner{
+    fill: red;
+    font-size: 1.5rem;
+}
+.hide{
+    display: none;
+}

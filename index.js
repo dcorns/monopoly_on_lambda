@@ -26,9 +26,11 @@ app.get('/allPrizeData', function(req, res){
     });
   });
 });
-
+app.post('/login', (req, res) => {
+  res.json({'called': 'login'})
+});
 app.post('/updatePrize', function(req, res){
-  res.json({'called':'post'});
+  res.json({'called':'updatePrize'});
 });
 
 module.exports = app;

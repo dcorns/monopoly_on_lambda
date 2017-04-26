@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monopoly Prize Tracker</title>
+    <link rel="stylesheet" type="text/css" href="./font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="./main.css">
+</head>
+<body>
+<input id="ticket" type="text" placeholder="enter prize piece number"><button id="btnEnter" type="button">ENTER</button>
+<button id="btnLogin" type="button">LOGIN
+</button><input id="emailOrPhone" type="text" placeholder="Enter email address or texting number to receive access" class="hide"><button id="btnSendTokenRequest" type="button" class="hide">SEND</button>
+<main>
+    <svg width="800" height="700" viewBox="-400 -300 800 690" id="prizes">
+        <rect id="p0" x="-400" y="-300" width="110" height="125" fill="#81C98A" stroke="black" data-winner=""></rect>
+        <rect id="p0" x="-400" y="-300" width="110" height="25" fill="#0DDB45" stroke="black"></rect>
+        <text id="t0" x="-345" y="-284" font-size="12px" text-anchor="middle" pointer-events="none">$5 Grocery Card</text>
+        <text id="w0" x="-345" y="-250" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p1" x="-285" y="-300" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p1" x="-285" y="-300" width="110" height="25" fill="#D240D7" stroke="black"></rect>
+        <text id="t1" x="-230" y="-284" font-size="12px" text-anchor="middle" pointer-events="none">$10 Grocery Card</text>
+        <text id="w1" x="-230" y="-250" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p2" x="-170" y="-300" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p2" x="-170" y="-300" width="110" height="25" fill="#F65601" stroke="black"></rect>
+        <text id="t2" x="-115" y="-284" font-size="12px" text-anchor="middle" pointer-events="none">$15 Grocery Card</text>
+        <text id="w2" x="-115" y="-250" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p3" x="-55" y="-300" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p3" x="-55" y="-300" width="110" height="25" fill="#F1202D" stroke="black"></rect>
+        <text id="t3" x="0" y="-284" font-size="12px" text-anchor="middle" pointer-events="none">$25 Mall Card</text>
+        <text id="w3" x="0" y="-250" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p4" x="60" y="-300" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p4" x="60" y="-300" width="110" height="25" fill="#EEA06E" stroke="black"></rect>
+        <text id="t4" x="115" y="-284" font-size="12px" text-anchor="middle" pointer-events="none">$25 Grocery Card</text>
+        <text id="w4" x="115" y="-250" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p5" x="175" y="-300" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p5" x="175" y="-300" width="110" height="25" fill="#54B7C9" stroke="black"></rect>
+        <text id="t5" x="230" y="-284" font-size="12px" text-anchor="middle" pointer-events="none">$25 Cash</text>
+        <text id="w5" x="230" y="-250" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p6" x="290" y="-300" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p6" x="290" y="-300" width="110" height="25" fill="#F7194C" stroke="black"></rect>
+        <text id="t6" x="345" y="-284" font-size="12px" text-anchor="middle" pointer-events="none">$50 Grocery Card</text>
+        <text id="w6" x="345" y="-250" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+
+
+        <rect id="p7" x="-400" y="-170" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p7" x="-400" y="-170" width="110" height="25" fill="#F65601" stroke="black"></rect>
+        <text id="t7" x="-345" y="-154" font-size="12px" text-anchor="middle" pointer-events="none">Red Box</text>
+        <text id="w7" x="-345" y="-120" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p8" x="-285" y="-170" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p8" x="-285" y="-170" width="110" height="25" fill="#F1202D" stroke="black"></rect>
+        <text id="t8" x="-230" y="-154" font-size="12px" text-anchor="middle" pointer-events="none">$100 Grocery Card</text>
+        <text id="w8" x="-230" y="-120" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p9" x="-170" y="-170" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p9" x="-170" y="-170" width="110" height="25" fill="#FFFD38" stroke="black"></rect>
+        <text id="t9" x="-115" y="-154" font-size="12px" text-anchor="middle" pointer-events="none">$100 Cash</text>
+        <text id="w9" x="-115" y="-120" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p10" x="-55" y="-170" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p10" x="-55" y="-170" width="110" height="25" fill="#D240D7" stroke="black"></rect>
+        <text id="t10" x="0" y="-154" font-size="12px" text-anchor="middle" pointer-events="none">$200 Cash</text>
+        <text id="w10" x="0" y="-120" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p11" x="60" y="-170" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p11" x="60" y="-170" width="110" height="25" fill="#0DDB45" stroke="black"></rect>
+        <text id="t11" x="115" y="-154" font-size="12px" text-anchor="middle" pointer-events="none">Family Picnic</text>
+        <text id="w11" x="115" y="-120" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p12" x="175" y="-170" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p12" x="175" y="-170" width="110" height="25" fill="#EEA06E" stroke="black"></rect>
+        <text id="t12" x="230" y="-154" font-size="12px" text-anchor="middle" pointer-events="none">SPA Treatment</text>
+        <text id="w12" x="230" y="-120" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p13" x="290" y="-170" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p13" x="290" y="-170" width="110" height="25" fill="#54B7C9" stroke="black"></rect>
+        <text id="t13" x="345" y="-154" font-size="12px" text-anchor="middle" pointer-events="none">Weekend Getaway</text>
+        <text id="w13" x="345" y="-120" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+
+
+        <rect id="p14" x="-400" y="-40" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p14" x="-400" y="-40" width="110" height="25" fill="#F7194C" stroke="black"></rect>
+        <text id="t14" x="-345" y="-24" font-size="12px" text-anchor="middle" pointer-events="none">$1000 Grocery Card</text>
+        <text id="w14" x="-345" y="10" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p15" x="-285" y="-40" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p15" x="-285" y="-40" width="110" height="25" fill="#F65601" stroke="black"></rect>
+        <text id="t15" x="-230" y="-24" font-size="12px" text-anchor="middle" pointer-events="none">$1000 Cash</text>
+        <text id="w15" x="-230" y="10" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p16" x="-170" y="-40" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p16" x="-170" y="-40" width="110" height="25" fill="#F1202D" stroke="black"></rect>
+        <text id="t16" x="-115" y="-24" font-size="12px" text-anchor="middle" pointer-events="none">LED HD TV</text>
+        <text id="w16" x="-115" y="10" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p17" x="-55" y="-40" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p17" x="-55" y="-40" width="110" height="25" fill="#FFFD38" stroke="black"></rect>
+        <text id="t17" x="0" y="-24" font-size="12px" text-anchor="middle" pointer-events="none">BigJoe Grill+</text>
+        <text id="w17" x="0" y="10" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p18" x="60" y="-40" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p18" x="60" y="-40" width="110" height="25" fill="#0DDB45" stroke="black"></rect>
+        <text id="t18" x="115" y="-24" font-size="12px" text-anchor="middle" pointer-events="none">$5000 Groceries</text>
+        <text id="w18" x="115" y="10" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p19" x="175" y="-40" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p19" x="175" y="-40" width="110" height="25" fill="#D240D7" stroke="black"></rect>
+        <text id="t19" x="230" y="-24" font-size="12px" text-anchor="middle" pointer-events="none">$5000 Cash</text>
+        <text id="w19" x="230" y="10" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p20" x="290" y="-40" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p20" x="290" y="-40" width="110" height="25" fill="#EEA06E" stroke="black"></rect>
+        <text id="t20" x="345" y="-24" font-size="12px" text-anchor="middle" pointer-events="none">Family Vacation</text>
+        <text id="w20" x="345" y="10" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+
+
+
+        <rect id="p21" x="-400" y="90" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p21" x="-400" y="90" width="110" height="25" fill="#54B7C9" stroke="black"></rect>
+        <text id="t21" x="-345" y="106" font-size="12px" text-anchor="middle" pointer-events="none">Jet Ski</text>
+        <text id="w21" x="-345" y="140" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p22" x="-285" y="90" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p22" x="-285" y="90" width="110" height="25" fill="#F7194C" stroke="black"></rect>
+        <text id="t22" x="-230" y="106" font-size="12px" text-anchor="middle" pointer-events="none">College Tuition</text>
+        <text id="w22" x="-230" y="140" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p23" x="-170" y="90" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p23" x="-170" y="90" width="110" height="25" fill="#FFFD38" stroke="black"></rect>
+        <text id="t23" x="-115" y="106" font-size="12px" text-anchor="middle" pointer-events="none">Vehicle of Choice</text>
+        <text id="w23" x="-115" y="140" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p24" x="-55" y="90" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p24" x="-55" y="90" width="110" height="25" fill="#0DDB45" stroke="black"></rect>
+        <text id="t24" x="0" y="106" font-size="12px" text-anchor="middle" pointer-events="none">Home Makeover</text>
+        <text id="w24" x="0" y="140" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p25" x="60" y="90" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p25" x="60" y="90" width="110" height="25" fill="#D240D7" stroke="black"></rect>
+        <text id="t25" x="115" y="106" font-size="12px" text-anchor="middle" pointer-events="none">$100,000 Cash or Car</text>
+        <text id="w25" x="115" y="140" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p26" x="175" y="90" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p26" x="175" y="90" width="110" height="25" fill="#7B868F" stroke="black"></rect>
+        <text id="t26" x="230" y="106" font-size="12px" text-anchor="middle" pointer-events="none">Vacation Home</text>
+        <text id="w26" x="230" y="140" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p27" x="290" y="90" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p27" x="290" y="90" width="110" height="25" fill="#FC971E" stroke="black"></rect>
+        <text id="t27" x="345" y="106" font-size="12px" text-anchor="middle" pointer-events="none">1,000,000 Cash</text>
+        <text id="w27" x="345" y="140" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+
+        <rect id="p28" x="-400" y="220" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p28" x="-400" y="220" width="110" height="25" fill="#7B868F" stroke="black"></rect>
+        <text id="t28" x="-345" y="236" font-size="12px" text-anchor="middle" pointer-events="none"></text>
+        <text id="w28" x="-345" y="270" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p29" x="-285" y="220" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p29" x="-285" y="220" width="110" height="25" fill="#FC971E" stroke="black"></rect>
+        <text id="t29" x="-230" y="236" font-size="12px" text-anchor="middle" pointer-events="none"></text>
+        <text id="w29" x="-230" y="270" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <rect id="p30" x="-170" y="220" width="110" height="125" fill="#81C98A" stroke="black"></rect>
+        <rect id="p30" x="-170" y="220" width="110" height="25" fill="#FC971E" stroke="black"></rect>
+        <text id="t30" x="-115" y="236" font-size="12px" text-anchor="middle" pointer-events="none"></text>
+        <text id="w30" x="-115" y="270" font-size="18px" text-anchor="middle" fill="black" pointer-events="none"></text>
+
+        <circle id="goBack" r="4" cx="-500" cy="-400" fill="#81C98A"></circle>
+        <text id="winnerTxt" class=winnerTxt x="-500" y="-400" font-size="8" text-anchor="middle" pointer-events="none">0</text>
+        <circle id="add0" r="5" cx="-500" cy="-400" fill="#0DDB45"></circle>
+        <circle id="add2" r="5" cx="-500" cy="-400" fill="#0DDB45"></circle>
+        <circle id="add4" r="5" cx="-500" cy="-400" fill="#0DDB45"></circle>
+        <circle id="add6" r="5" cx="-500" cy="-400" fill="#0DDB45"></circle>
+        <circle id="add8" r="5" cx="-500" cy="-400" fill="#0DDB45"></circle>
+        <circle id="add10" r="5" cx="-500" cy="-400" fill="#0DDB45"></circle>
+        <circle id="add12" r="5" cx="-500" cy="-400" fill="#0DDB45"></circle>
+        <circle id="add14" r="5" cx="-500" cy="-400" fill="#0DDB45"></circle>
+        <circle id="minus0" r="5" cx="-500" cy="-400" fill="#F1202D"></circle>
+        <circle id="minus2" r="5" cx="-500" cy="-400" fill="#F1202D"></circle>
+        <circle id="minus4" r="5" cx="-500" cy="-400" fill="#F1202D"></circle>
+        <circle id="minus6" r="5" cx="-500" cy="-400" fill="#F1202D"></circle>
+        <circle id="minus8" r="5" cx="-500" cy="-400" fill="#F1202D"></circle>
+        <circle id="minus10" r="5" cx="-500" cy="-400" fill="#F1202D"></circle>
+        <circle id="minus12" r="5" cx="-500" cy="-400" fill="#F1202D"></circle>
+        <circle id="minus14" r="5" cx="-500" cy="-400" fill="#F1202D"></circle>
+        <text id="part1" class="partTxt" x="-500" y="-400" font-size="8" pointer-events="none"></text>
+        <text id="part2" class="partTxt" x="-500" y="-400" font-size="8" pointer-events="none"></text>
+        <text id="part3" class="partTxt" x="-500" y="-400" font-size="8" pointer-events="none"></text>
+        <text id="part4" class="partTxt" x="-500" y="-400" font-size="8" pointer-events="none"></text>
+        <text id="part5" class="partTxt" x="-500" y="-400" font-size="8" pointer-events="none"></text>
+        <text id="part6" class="partTxt" x="-500" y="-400" font-size="8" pointer-events="none"></text>
+        <text id="part7" class="partTxt" x="-500" y="-400" font-size="8" pointer-events="none"></text>
+        <text id="part8" class="partTxt" x="-500" y="-400" font-size="8" pointer-events="none"></text>
+        <text id="addTxt0" class="addTxt" x="-500" y="-400" font-size="8" text-anchor="middle" pointer-events="none">0</text>
+        <text id="addTxt2" class="addTxt" x="-500" y="-400" font-size="8" text-anchor="middle" pointer-events="none">0</text>
+        <text id="addTxt4" class="addTxt" x="-500" y="-400" font-size="8" text-anchor="middle" pointer-events="none">0</text>
+        <text id="addTxt6" class="addTxt" x="-500" y="-400" font-size="8" text-anchor="middle" pointer-events="none">0</text>
+        <text id="addTxt8" class="addTxt" x="-500" y="-400" font-size="8" text-anchor="middle" pointer-events="none">0</text>
+        <text id="addTxt10" class="addTxt" x="-500" y="-400" font-size="8" text-anchor="middle" pointer-events="none">0</text>
+        <text id="addTxt12" class="addTxt" x="-500" y="-400" font-size="8" text-anchor="middle" pointer-events="none">0</text>
+        <text id="addTxt14" class="addTxt" x="-500" y="-400" font-size="8" text-anchor="middle" pointer-events="none">0</text>
+    </svg>
+</main>
+<script src="pack.js"></script>
+</body>
+</html>

@@ -3,3 +3,4 @@ yarn.lock
 test.json
 mockData.json
 localIndex.js
+client/pack.js
