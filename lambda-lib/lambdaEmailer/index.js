@@ -6,8 +6,31 @@
  */
 'use strict';
 const nodeMailer = require('nodemailer');
-const app = () => {
-  console.log('This is an app');
+exports.handler = function(event, context, callback) {
+  let email = (event.email === undefined ? false : event.email);
+  if(!email) callback(new Error('Requires email input'));
+  //if the email is not valid, it will simply be rejected when sent; no validation if performed, leaving that to the smtp server.
+  let transporter = nodeMailer.createTransport({
+    service: 'SES-US-WEST-2',
+    auth: {
+      user: 'AKIAJNB4X5ORKZ4DLH5Q',
+      pass: 'AvZPcbTyF1HuKrIzCPvGLj6JRlnzK/snbWw9n/M1rk1l'
+    }
+  });
+  let opt = {
+    from: 'noreply@dalecorns.com',
+    to: email,
+    subject: 'Monopoly Login Verification',
+    text: 'Hello from monopoly',
+    html: `<h1><a href="http://www.dalecorns.com">Click here to validate your email</a></h1>
+           <h2>This was sent so that you can login to Monopoly Prize Tracker. If you did not request this login, do not click the link</h2>`
+  };
+  transporter.sendMail(opt, (err, res) => {
+    if (err) {
+      callback(err);
+    }
+    else {
+      callback(null, {"Message sent to": email});
+    }
+  });
 };
-
-module.exports = app;
