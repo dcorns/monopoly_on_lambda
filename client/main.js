@@ -50,7 +50,7 @@ const acquireView = (view) => {
 const store = {}; //Will be responsible for all data state changes
 let prizeData = [];
 const remoteDataUrl = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod';
-const tokenResource = '/requestToken';
+const tokenResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/requesttoken';
 view.current = {prize: false};
 const defineViewFunctions = (view) => {
   view.setCurrent = (prop, val) => {

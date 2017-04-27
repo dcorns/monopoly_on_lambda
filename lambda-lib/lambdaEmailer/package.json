@@ -1,0 +1,10 @@
+{
+  "name": "lambdaEmailer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {},
+  "license": "MIT",
+  "dependencies": {
+    "nodemailer": "^4.0.1"
+  }
+}
