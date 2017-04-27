@@ -50,7 +50,7 @@ const acquireView = (view) => {
 const store = {}; //Will be responsible for all data state changes
 let prizeData = [];
 const remoteDataUrl = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod';
-const tokenResource = 'wherever I am getting authorization token';
+const tokenResource = '/requestToken';
 view.current = {prize: false};
 const defineViewFunctions = (view) => {
   view.setCurrent = (prop, val) => {
@@ -521,6 +521,7 @@ document.getElementById('btnLogin').addEventListener('click', () => {
 });
 document.getElementById('btnSendTokenRequest').addEventListener('click', () => {
   requestToken(document.getElementById('emailOrPhone').value, tokenResource, (err, data) => {
+    console.log(`data:${data}`);
     //When user has confirmed ownership of phone or email, Store or assign token to memory for subsequent requests
   });
 });
@@ -528,8 +529,9 @@ const logIn = () => {
   view.toggleCredentialView();
 };
 const requestToken = (emailOrPhone, tokenProvider, cb) => {
-  console.log('requestTokenCalled');
   view.toggleCredentialView();
+  const data = {email: emailOrPhone};
+  ajaxPostJson(tokenProvider, data, cb);
   //email or phone validation if not in view
   //const jsonOut = {"sendTo": emailOrPhone };
   //ajaxPostJson(tokenProvider, jsonOut, cb);
