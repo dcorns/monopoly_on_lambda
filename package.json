@@ -13,8 +13,7 @@
     "aws-serverless-express": "^2.2.0",
     "body-parser": "^1.17.1",
     "cors": "^2.8.3",
-    "express": "^4.15.2",
-    "nodemailer": "^4.0.1"
+    "express": "^4.15.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",

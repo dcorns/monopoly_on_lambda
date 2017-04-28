@@ -13,8 +13,8 @@ exports.handler = function(event, context, callback) {
   let transporter = nodeMailer.createTransport({
     service: 'SES-US-WEST-2',
     auth: {
-      user: 'AKIAJNB4X5ORKZ4DLH5Q',
-      pass: 'AvZPcbTyF1HuKrIzCPvGLj6JRlnzK/snbWw9n/M1rk1l'
+      user: process.env.USER,
+      pass: process.env.PASS
     }
   });
   let opt = {
