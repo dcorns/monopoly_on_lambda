@@ -7,7 +7,7 @@
 'use strict';
 const crypto = require('crypto');
 exports.handler = function(event, context, cb) {
-  const email = event.data;
+  const email = event.email;
   const guid = crypto.createHmac('sha256', process.env.SECRET)
     .update(email)
     .digest('hex');

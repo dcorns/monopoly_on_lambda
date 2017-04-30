@@ -6,3 +6,4 @@ localIndex.js
 client/pack.js
 ses-smtp-dcorns-Credentials.csv
 lambda-lib/lambdaEmailer/archive.zip
+lambda-lib/lambdaMakeToken/serviceAccount.json
