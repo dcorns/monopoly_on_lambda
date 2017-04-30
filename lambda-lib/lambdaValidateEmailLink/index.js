@@ -7,9 +7,9 @@
 'use strict';
 const https = require('https');
 const opt = {
-  host: 'pjpk6esqw5.execute-api.us-west-2.amazonaws.com',
+  host: process.env.URLHOST,
   port: '443',
-  path: '/prod/getguid',
+  path: process.env.URLPATH,
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',

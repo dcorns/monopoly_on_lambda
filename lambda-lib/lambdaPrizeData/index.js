@@ -8,7 +8,7 @@
 exports.handler = function(event, context, callback) {
   const https = require('https');
   let uid = event.uid || 'bob';
-  https.get(`https://monopoly-d9e3c.firebaseio.com/${uid}.json`, (fbres) => {
+  https.get(`${process.env.DB}/${uid}.json`, (fbres) => {
     console.log('inside https.get');
     fbres.on('data', (d) => {
       callback(null, d.toString());
