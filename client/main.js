@@ -53,6 +53,7 @@ const remoteDataUrl = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/pr
 const tokenResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/requesttoken';
 const sendEmailAuthResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/sendauthorizationemail';
 const guidResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/getguid';
+const hashResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/gethash';
 view.current = {prize: false};
 const defineViewFunctions = (view) => {
   view.setCurrent = (prop, val) => {
@@ -533,8 +534,8 @@ const logIn = () => {
 const requestToken = (emailOrPhone, tokenProvider, cb) => {
   view.toggleCredentialView();
   const data = {email: emailOrPhone};
-  ajaxPostJson(guidResource, data, (err, resData) => {
-    data.guid = resData;
+  ajaxPostJson(hashResource, data, (err, resData) => {
+    data.hash = resData;
     console.dir(data);
     ajaxPostJson(sendEmailAuthResource, data, cb);
   });
