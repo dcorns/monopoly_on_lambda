@@ -7,7 +7,6 @@
 'use strict';
 const admin = require('firebase-admin');
 const serviceAccount = require('./serviceAccount.json');
-const https = require('https');
 exports.handler = (event, context, cb) => {
   const guid = event.guid;
   if(admin.apps.length === 0){ // <---Important!!! In lambda, it will cause double initialization and the API Gateway will need to execute twice for a successful result.

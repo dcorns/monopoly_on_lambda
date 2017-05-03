@@ -5,5 +5,14 @@ mockData.json
 localIndex.js
 client/pack.js
 ses-smtp-dcorns-Credentials.csv
-lambda-lib/lambdaEmailer/archive.zip
-lambda-lib/lambdaMakeToken/serviceAccount.json
+
+/firebaseTesting/
+/lambda-lib/lambdaEmailer/node_modules/
+/lambda-lib/lambdaEmailer/archive.zip
+/lambda-lib/lambdaMakeToken/node_modules/
+/lambda-lib/lambdaMakeToken/archive.zip
+/lambda-lib/lambdaMakeToken/serviceAccount.json
+/lambda-lib/lambdaWriteHash/node_modules/
+/lambda-lib/lambdaWriteHash/archive.zip
+/lambda-lib/lambdaWriteHash/serviceAccount.json
+/lambda-lib/lambdaLogin/serviceAccount.json

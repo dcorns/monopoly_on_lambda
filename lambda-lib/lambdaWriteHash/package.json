@@ -1,0 +1,10 @@
+{
+  "name": "firebaseTesting",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {},
+  "license": "MIT",
+  "dependencies": {
+    "firebase-admin": "^4.2.1"
+  }
+}

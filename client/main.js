@@ -50,7 +50,6 @@ const acquireView = (view) => {
 const store = {}; //Will be responsible for all data state changes
 let prizeData = [];
 const remoteDataUrl = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/allprizedata';
-const tokenResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/requesttoken';
 const sendEmailAuthResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/sendauthorizationemail';
 const guidResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/getguid';
 const hashResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/gethash';
@@ -523,20 +522,16 @@ document.getElementById('btnLogin').addEventListener('click', () => {
   if(!(loggedIn)) logIn();
 });
 document.getElementById('btnSendTokenRequest').addEventListener('click', () => {
-  requestToken(document.getElementById('emailOrPhone').value, tokenResource, (err, data) => {
+  requestToken(document.getElementById('emailOrPhone').value, (err, data) => {
     console.dir(data);
     //When user has confirmed ownership of phone or email, Store or assign token to memory for subsequent requests
   });
 });
-const logIn = () => {
-  view.toggleCredentialView();
-};
-const requestToken = (emailOrPhone, tokenProvider, cb) => {
+const requestToken = (emailOrPhone, cb) => {
   view.toggleCredentialView();
   const data = {email: emailOrPhone};
   ajaxPostJson(hashResource, data, (err, resData) => {
     data.hash = resData;
-    console.dir(data);
     ajaxPostJson(sendEmailAuthResource, data, cb);
   });
 
@@ -544,6 +539,16 @@ const requestToken = (emailOrPhone, tokenProvider, cb) => {
   //const jsonOut = {"sendTo": emailOrPhone };
   //ajaxPostJson(tokenProvider, jsonOut, cb);
 };
+const logIn = () => {
+  view.toggleCredentialView();
+};
+const issueToken = (hash) => {
+  console.log(hash);
+  window.location.hash = '';
+};
+if(window.location.hash){
+  issueToken(window.location.hash.slice(1));
+}
 //Pure functions
 const isAWinningTicket = (ticketId, ticketAry) => {
   return ticketAry.find((prizeTicket) => prizeTicket.winner === ticketId);

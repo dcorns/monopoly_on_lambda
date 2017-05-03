@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "firebase-admin": "^4.2.1",
+    "nodemailer": "^4.0.1"
+  }
+}
