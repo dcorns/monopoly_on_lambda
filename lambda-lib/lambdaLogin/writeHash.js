@@ -17,7 +17,7 @@ module.exports = function writeHash(hash){
     }
     const db = admin.database();
     const ref = db.ref();
-    ref.child(hash).set(hash)
+    ref.child('hash').child(hash).set(Date.now())
       .catch((err) => {
         console.log(err);
         reject(err);

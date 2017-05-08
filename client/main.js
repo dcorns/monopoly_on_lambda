@@ -49,10 +49,10 @@ const acquireView = (view) => {
 };
 const store = {}; //Will be responsible for all data state changes
 let prizeData = [];
+const loginResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/monoplylogin';//note: https will fail locally but not when uploaded to s3. Use http when running locally.
 const remoteDataUrl = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/allprizedata';
 const sendEmailAuthResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/sendauthorizationemail';
-const guidResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/getguid';
-const hashResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/gethash';
+const authorizationResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/';
 view.current = {prize: false};
 const defineViewFunctions = (view) => {
   view.setCurrent = (prop, val) => {
@@ -375,7 +375,7 @@ function updatePrize(prize) {
 function ajaxPostJson(url, jsonData, cb, token) {
   const ajaxReq = new XMLHttpRequest();
   ajaxReq.addEventListener('load', function () {
-    if (ajaxReq.status === 200) cb(null, JSON.parse(ajaxReq.responseText));
+    if (ajaxReq.status === 200 || ajaxReq.status === 404) cb(null, JSON.parse(ajaxReq.responseText));
     else cb(JSON.parse(ajaxReq.responseText), null);
   });
   ajaxReq.addEventListener('error', function (data) {
@@ -386,7 +386,7 @@ function ajaxPostJson(url, jsonData, cb, token) {
 
 //Must open before setting request header, so this order is required
   ajaxReq.open('POST', url, true);
-  ajaxReq.setRequestHeader('Content-Type', 'application/json');
+  ajaxReq.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
   if (token) {
     ajaxReq.setRequestHeader('Authorization', token);
   }
@@ -530,20 +530,20 @@ document.getElementById('btnSendTokenRequest').addEventListener('click', () => {
 const requestToken = (emailOrPhone, cb) => {
   view.toggleCredentialView();
   const data = {email: emailOrPhone};
-  ajaxPostJson(hashResource, data, (err, resData) => {
+  ajaxPostJson(loginResource, data, (err, resData) => {
     data.hash = resData;
-    ajaxPostJson(sendEmailAuthResource, data, cb);
   });
 
-  //email or phone validation if not in view
-  //const jsonOut = {"sendTo": emailOrPhone };
-  //ajaxPostJson(tokenProvider, jsonOut, cb);
 };
 const logIn = () => {
   view.toggleCredentialView();
 };
 const issueToken = (hash) => {
   console.log(hash);
+  // ajaxPostJson(authorizationResource,{hash: hash}, (err, resData) => {
+  //   if(err) console.error(err);
+  //   console.log(resData);
+  // });
   window.location.hash = '';
 };
 if(window.location.hash){

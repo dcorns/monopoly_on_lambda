@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "firebase-admin": "^4.2.1",
+    "jwt-simple": "^0.5.1"
+  }
+}
