@@ -5,7 +5,6 @@ mockData.json
 localIndex.js
 client/pack.js
 ses-smtp-dcorns-Credentials.csv
-
 /firebaseTesting/
 /forkTesting/
 /lambda-lib/lambdaEmailer/node_modules/
@@ -27,3 +26,4 @@ ses-smtp-dcorns-Credentials.csv
 /lambda-lib/lambdaLogin/index-test.js
 /lambda-lib/lambdaAuthorization/modules/serviceAccount.json
 /moduleTesting/
+/lambda-lib/lambdaAuthorization/archive.zip
