@@ -7,6 +7,7 @@ client/pack.js
 ses-smtp-dcorns-Credentials.csv
 
 /firebaseTesting/
+/forkTesting/
 /lambda-lib/lambdaEmailer/node_modules/
 /lambda-lib/lambdaEmailer/archive.zip
 /lambda-lib/lambdaMakeToken/node_modules/
