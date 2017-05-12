@@ -49,10 +49,10 @@ const acquireView = (view) => {
 };
 const store = {}; //Will be responsible for all data state changes
 let prizeData = [];
-const loginResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/monoplylogin';//note: https will fail locally but not when uploaded to s3. Use http when running locally.
+const loginResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/monoplylogin';
 const remoteDataUrl = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/allprizedata';
-const sendEmailAuthResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/sendauthorizationemail';
-const authorizationResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/';
+const authorizationResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/monopolyauthorization';
+const userDataResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/userdata';
 view.current = {prize: false};
 const defineViewFunctions = (view) => {
   view.setCurrent = (prop, val) => {
@@ -221,16 +221,6 @@ store.incrementTicketPartQuantity = (ticketIdx, ticket, value) => {
   let partList = prizeData[ticketIdx].tickets.partList;
   partList[partList.indexOf(ticket) + 1] += value;
 };
-store.setPrizeDataToRemote(remoteDataUrl, function (err, data) {
-  if (err) {
-    alert('There was a problem loading prize Data!');
-    console.dir(err);
-    return;
-  }
-  //not sure why I have to parse this twice, but it does not work when I parse it only once
-  prizeData = JSON.parse(JSON.parse(data));
-  configureUi(prizeData);
-});
 //add all svg event handlers
 view.svgRoot.addEventListener('click', function (e) {
   try {
@@ -298,7 +288,6 @@ view.svgRoot.addEventListener('click', function (e) {
     console.log(e);
   }
 });
-
 function reset(e) {
   document.getElementById('w' + e.target.attributes[5].value).classList.remove('less');
   view.largeCardSubTitle.setAttribute('x', '500');
@@ -342,13 +331,11 @@ function reset(e) {
     updatePrize(currentPrize);
   }
 }
-
 function adjustTicketQuantity(addBtn, qidx, q) {
   currentPrize.tickets.partList[qidx] = currentPrize.tickets.partList[qidx] + q;
   if (currentPrize.tickets.partList[qidx] < 0) currentPrize.tickets.partList[qidx] = 0;
   addBtn.textContent = currentPrize.tickets.partList[qidx];
 }
-
 function updatePrize(prize) {
   if (!prize.tickets.winner) {
     let ticket = checkForRareTicket(prize);
@@ -371,7 +358,6 @@ function updatePrize(prize) {
     });
   });
 }
-
 function ajaxPostJson(url, jsonData, cb, token) {
   const ajaxReq = new XMLHttpRequest();
   ajaxReq.addEventListener('load', function () {
@@ -390,9 +376,14 @@ function ajaxPostJson(url, jsonData, cb, token) {
   if (token) {
     ajaxReq.setRequestHeader('Authorization', token);
   }
-  ajaxReq.send(JSON.stringify(jsonData));
-}
+  if(jsonData) {
+    ajaxReq.send(JSON.stringify(jsonData));
+  }
+  else{
+    ajaxReq.send();
+  }
 
+}
 function prizeChanged(partList) {
   //if(!grids.rowsEqual(partList, prizeData[currentIndex].tickets.partList)) return true;
   var c = 0;
@@ -401,7 +392,6 @@ function prizeChanged(partList) {
   }
   return (currentPrize.tickets.winner !== prizeData[currentIndex].tickets.winner);
 }
-
 function setCurrentPrize(prize) {
   var result = {
     name: prize.name,
@@ -524,30 +514,50 @@ document.getElementById('btnLogin').addEventListener('click', () => {
 document.getElementById('btnSendTokenRequest').addEventListener('click', () => {
   requestToken(document.getElementById('emailOrPhone').value, (err, data) => {
     console.dir(data);
-    //When user has confirmed ownership of phone or email, Store or assign token to memory for subsequent requests
   });
 });
 const requestToken = (emailOrPhone, cb) => {
   view.toggleCredentialView();
   const data = {email: emailOrPhone};
   ajaxPostJson(loginResource, data, (err, resData) => {
-    data.hash = resData;
+    cb(`'requestTokenResponse:', ${resData}`);
   });
-
 };
 const logIn = () => {
   view.toggleCredentialView();
 };
 const issueToken = (hash) => {
-  console.log(hash);
-  // ajaxPostJson(authorizationResource,{hash: hash}, (err, resData) => {
-  //   if(err) console.error(err);
-  //   console.log(resData);
-  // });
-  window.location.hash = '';
+  ajaxPostJson(authorizationResource,{hash: hash}, (err, resData) => {
+    if(err) console.error(err);
+    window.localStorage.setItem('token',resData);
+    window.location.hash = '';
+    getUserData();
+  });
 };
 if(window.location.hash){
   issueToken(window.location.hash.slice(1));
+}
+const getUserData = () => {
+  ajaxPostJson(userDataResource,{'doesnot':'matter'}, (err, data) => {
+    if(err) console.error(err);
+    prizeData = data;
+    configureUi(prizeData);
+  }, window.localStorage.getItem('token'));
+};
+if(window.localStorage.getItem('token')){
+  getUserData();
+}
+else{
+  store.setPrizeDataToRemote(remoteDataUrl, function (err, data) {
+    if (err) {
+      alert('There was a problem loading prize Data!');
+      console.dir(err);
+      return;
+    }
+    //not sure why I have to parse this twice, but it does not work when I parse it only once
+    prizeData = JSON.parse(JSON.parse(data));
+    configureUi(prizeData);
+  });
 }
 //Pure functions
 const isAWinningTicket = (ticketId, ticketAry) => {

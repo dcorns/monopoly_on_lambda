@@ -27,3 +27,7 @@ ses-smtp-dcorns-Credentials.csv
 /lambda-lib/lambdaAuthorization/modules/serviceAccount.json
 /moduleTesting/
 /lambda-lib/lambdaAuthorization/archive.zip
+/lambda-lib/lambdaUserData/modules/serviceAccount.json
+/lambda-lib/lambdaUserData/node_modules/
+/lambda-lib/lambdaUserData/archive.zip
+
