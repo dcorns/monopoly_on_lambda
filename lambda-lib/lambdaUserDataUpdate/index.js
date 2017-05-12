@@ -7,7 +7,7 @@
 'use strict';
 const childProcess = require('child_process');
 const secret = process.env.SECRET;
-module.exports = (event, context, cb) => {
+exports.handler = (event, context, cb) => {
   const token = event.headers["Authorization"];
   const forkMe = childProcess.fork('./fork-me');
   forkMe.send({token: token, secret: secret, data: event.data});

@@ -336,7 +336,9 @@ function adjustTicketQuantity(addBtn, qidx, q) {
   if (currentPrize.tickets.partList[qidx] < 0) currentPrize.tickets.partList[qidx] = 0;
   addBtn.textContent = currentPrize.tickets.partList[qidx];
 }
+
 function updatePrize(prize) {
+
   if (!prize.tickets.winner) {
     let ticket = checkForRareTicket(prize);
     if (ticket) {

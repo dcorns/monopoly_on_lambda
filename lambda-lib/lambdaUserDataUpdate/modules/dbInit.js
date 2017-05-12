@@ -17,16 +17,4 @@ if(admin.apps.length === 0){
 module.exports = (collection) => {
   return admin.database().ref().child(collection);
 };
-// let ref = admin.database().ref().child(collection);
-//  const readCollection = () => {
-//    return new Promise((resolve, reject) => {
-//      ref.on('value', (snap) => {
-//        resolve(snap.val());
-//      });
-//    });
-//  };
-// readCollection().then((res) => {
-//   console.log(res);
-// }).catch((err) => {
-//   console.log(err);
-// });
+
