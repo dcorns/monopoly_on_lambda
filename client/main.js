@@ -343,20 +343,21 @@ function updatePrize(prize) {
       prize.tickets.winner = ticket;
     }
   }
-  ajaxPostJson('/updatePrize', prize, function (err, data) {
+  ajaxPostJson(userDataResource + '/update', prize, function (err, data) {
     if (err) {
       console.dir(err);
       return;
     }
-    store.setPrizeDataToRemote('/allPrizeData', function (err, data) {
-      if (err) {
-        alert('There was a problem loading prize Data!');
-        console.dir(err);
-        return;
-      }
-      prizeData = JSON.parse(data);
-    });
-  });
+    console.log(data);
+    // store.setPrizeDataToRemote('/allPrizeData', function (err, data) {
+    //   if (err) {
+    //     alert('There was a problem loading prize Data!');
+    //     console.dir(err);
+    //     return;
+    //   }
+    //   prizeData = JSON.parse(data);
+    // });
+  }, localStorage.getItem('token'));
 }
 function ajaxPostJson(url, jsonData, cb, token) {
   const ajaxReq = new XMLHttpRequest();
