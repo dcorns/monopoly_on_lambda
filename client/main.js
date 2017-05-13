@@ -50,7 +50,7 @@ const acquireView = (view) => {
 const store = {}; //Will be responsible for all data state changes
 let prizeData = [];
 const loginResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/monoplylogin';
-const remoteDataUrl = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/allprizedata';
+const remoteDataUrl = 'https://monopoly-d9e3c.firebaseio.com/bob.json';
 const authorizationResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/monopolyauthorization';
 const userDataResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/userdata';
 view.current = {prize: false};
@@ -208,6 +208,7 @@ defineViewFunctions(view);
 store.setPrizeDataToRemote = (url, cb) => {
   const ajaxReq = new XMLHttpRequest();
   ajaxReq.addEventListener('load', function () {
+    console.log('status',ajaxReq.status);
     if (ajaxReq.status === 200) cb(null, ajaxReq.responseText);
     else cb(ajaxReq.responseText, null);
   });
@@ -416,6 +417,7 @@ function setCurrentPrize(prize) {
  * @returns {string} winning - ticket id or '' if no winner identified
  */
 function checkForRareTicket(prize) {
+  console.log('checkForRareTicket-prize:',prize);
   var ticket = [];
   var len = prize.tickets.partList.length, c = 1;
   for (c; c < len; c += 2) {
@@ -558,7 +560,11 @@ else{
       return;
     }
     //not sure why I have to parse this twice, but it does not work when I parse it only once
-    prizeData = JSON.parse(JSON.parse(data));
+    console.log('data:', data);
+    console.log('data one parse:', JSON.parse(data));
+    prizeData = JSON.parse(data);
+    console.log('prizeData:', prizeData);
+    window.localStorage.setItem('prizeData', data);
     configureUi(prizeData);
   });
 }

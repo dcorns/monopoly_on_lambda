@@ -4,7 +4,7 @@
  * Copyright © 2017 Dale Corns
  * MIT Licensed
  */
-
+//OBSOLETE: Replaced by direct firebase connection to default all read data
 exports.handler = function(event, context, callback) {
   const https = require('https');
   let uid = event.uid || 'bob';
