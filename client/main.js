@@ -47,12 +47,22 @@ const acquireView = (view) => {
   view.addTxt12 = document.getElementById("addTxt12");
   view.addTxt14 = document.getElementById("addTxt14");
 };
-const store = {}; //Will be responsible for all data state changes
+//Store will be responsible for all data state
+
 let prizeData = [];
+const store = {
+  current:{
+    prizeIndex:0,
+    partQuantityIndex:1,
+    partQuantityValue:0,
+    prize: false
+  }
+};
 const loginResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/monoplylogin';
 const remoteDataUrl = 'https://monopoly-d9e3c.firebaseio.com/bob.json';
 const authorizationResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/monopolyauthorization';
 const userDataResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/userdata';
+const updateUserDataResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/userdataupdate';
 view.current = {prize: false};
 const defineViewFunctions = (view) => {
   view.setCurrent = (prop, val) => {
@@ -74,7 +84,7 @@ const defineViewFunctions = (view) => {
       document.getElementById(`w${prize.viewId.substr(1)}`).textContent = 'Winner Unknown';
     }
   };
-  view.enlargeCard = (target) => {
+  view.cardSelected = (target) => {
     const x = target.x.baseVal.value;
     const y = target.y.baseVal.value;
     view.positionViewBox(x,y,'prizes');
@@ -82,8 +92,10 @@ const defineViewFunctions = (view) => {
     const prizeId = target.id.substr(1);
     document.getElementById(`w${prizeId}`).classList.add('less');
     const prizeIdx = prizeData.findIndex((pd) => pd.viewId === target.id);
-    currentPrize = setCurrentPrize(prizeData[prizeIdx]);
+    currentPrize = store.setCurrentPrize(prizeData[prizeIdx]);
     currentIndex = prizeIdx;
+    store.current.prizeIndex = prizeIdx;
+    store.current.prize = store.setCurrentPrize(prizeData[store.current.prizeIndex]);
     const largeCardHeaderBottom = 30.5;
     const addC1Xoffset = 7, partC1Xoffset = 15, minusC1Xoffset = 44, addC2Xoffset = 66, partC2Xoffset = 74,
       minusC2Xoffset = 103;
@@ -281,7 +293,7 @@ view.svgRoot.addEventListener('click', function (e) {
           //future feature
         break;
       default:
-        view.enlargeCard(e.target);
+        view.cardSelected(e.target);
         break;
     }
   }
@@ -327,18 +339,18 @@ function reset(e) {
   view.addTxt12.setAttribute('x', '500');
   view.addTxt14.setAttribute('x', '500');
   view.svgRoot.setAttribute('viewBox', '-400 -300 800 690');
-  if (prizeChanged(currentPrize.tickets.partList)) {
+  if (prizeChanged(store.current.prize.tickets.partList)) {
     console.log('updating prize');
-    updatePrize(currentPrize);
+    updatePrize(store.current.prize, store.current.prizeIndex);
   }
 }
 function adjustTicketQuantity(addBtn, qidx, q) {
-  currentPrize.tickets.partList[qidx] = currentPrize.tickets.partList[qidx] + q;
-  if (currentPrize.tickets.partList[qidx] < 0) currentPrize.tickets.partList[qidx] = 0;
-  addBtn.textContent = currentPrize.tickets.partList[qidx];
+  store.current.prize.tickets.partList[qidx] = store.current.prize.tickets.partList[qidx] + q;
+  if (store.current.prize.tickets.partList[qidx] < 0) store.current.prize.tickets.partList[qidx] = 0;
+  addBtn.textContent = store.current.prize.tickets.partList[qidx];
 }
 
-function updatePrize(prize) {
+function updatePrize(prize, prizeIdx) {
 
   if (!prize.tickets.winner) {
     let ticket = checkForRareTicket(prize);
@@ -346,20 +358,13 @@ function updatePrize(prize) {
       prize.tickets.winner = ticket;
     }
   }
-  ajaxPostJson(userDataResource + '/update', prize, function (err, data) {
+  ajaxPostJson(updateUserDataResource, {prizeIdx: prizeIdx, prize: prize}, function (err, data) {
     if (err) {
       console.dir(err);
       return;
     }
     console.log(data);
-    // store.setPrizeDataToRemote('/allPrizeData', function (err, data) {
-    //   if (err) {
-    //     alert('There was a problem loading prize Data!');
-    //     console.dir(err);
-    //     return;
-    //   }
-    //   prizeData = JSON.parse(data);
-    // });
+
   }, localStorage.getItem('token'));
 }
 function ajaxPostJson(url, jsonData, cb, token) {
@@ -390,14 +395,14 @@ function ajaxPostJson(url, jsonData, cb, token) {
 }
 function prizeChanged(partList) {
   //if(!grids.rowsEqual(partList, prizeData[currentIndex].tickets.partList)) return true;
-  var c = 0;
+  let c = 0;
   for (c; c < partList.length; c++) {
-    if (partList[c] !== prizeData[currentIndex].tickets.partList[c]) return true;
+    if (partList[c] !== prizeData[store.current.prizeIndex].tickets.partList[c]) return true;
   }
-  return (currentPrize.tickets.winner !== prizeData[currentIndex].tickets.winner);
+  return (store.current.prize.tickets.winner !== prizeData[store.current.prizeIndex].tickets.winner);
 }
-function setCurrentPrize(prize) {
-  var result = {
+store.setCurrentPrize = (prize) => {
+  return {
     name: prize.name,
     value: prize.value,
     available: prize.available,
@@ -406,10 +411,10 @@ function setCurrentPrize(prize) {
       partList: [prize.tickets.partList[0], prize.tickets.partList[1], prize.tickets.partList[2], prize.tickets.partList[3], prize.tickets.partList[4], prize.tickets.partList[5], prize.tickets.partList[6], prize.tickets.partList[7], prize.tickets.partList[8], prize.tickets.partList[9], prize.tickets.partList[10], prize.tickets.partList[11], prize.tickets.partList[12], prize.tickets.partList[13], prize.tickets.partList[14], prize.tickets.partList[15], prize.tickets.partList[16]],
       winner: prize.tickets.winner
     },
-    startAvailable: prize.startAvailable
+    startAvailable: prize.startAvailable,
+    viewId: prize.viewId
   };
-  return result;
-}
+};
 /**
  * Takes a prize object and stores tickets with zero quantities into an array, then checks the length of the array. If the length of the array is equal to one, then it returns that ticket as the winning ticket, else it returns ''
  * @param {Object} prize
@@ -417,7 +422,6 @@ function setCurrentPrize(prize) {
  * @returns {string} winning - ticket id or '' if no winner identified
  */
 function checkForRareTicket(prize) {
-  console.log('checkForRareTicket-prize:',prize);
   var ticket = [];
   var len = prize.tickets.partList.length, c = 1;
   for (c; c < len; c += 2) {
@@ -482,7 +486,7 @@ function ticketInput(value) {
     if (winner) youWin(prize.viewId);
     else addTicketMessage(prize.viewId, ticket, prize.tickets.partList[prize.tickets.partList.indexOf(ticket) + 1] + 1, prize);
     store.incrementTicketPartQuantity(ticketIdx, ticket, 1);
-    updatePrize(prize);
+    updatePrize(prize, prize.current.prizeIndex);
   }
 }
 function youWin(viewId) {
@@ -545,6 +549,15 @@ if(window.location.hash){
 const getUserData = () => {
   ajaxPostJson(userDataResource,{'doesnot':'matter'}, (err, data) => {
     if(err) console.error(err);
+    if(!data) {//No data sent, token expired need to make more standard determination
+      const cacheData = window.localStorage.getItem('prizeData');
+      if(cacheData){
+        prizeData = JSON.parse(cacheData);
+        configureUi(prizeData);
+        alert('Your login session has ended, login again to avoid losing local changes');
+        return;
+      }
+    }
     prizeData = data;
     configureUi(prizeData);
   }, window.localStorage.getItem('token'));
@@ -555,15 +568,18 @@ if(window.localStorage.getItem('token')){
 else{
   store.setPrizeDataToRemote(remoteDataUrl, function (err, data) {
     if (err) {
-      alert('There was a problem loading prize Data!');
+      const cacheData = window.localStorage.getItem('prizeData');
+      if(cacheData){
+        prizeData = JSON.parse(cacheData);
+        configureUi(prizeData);
+        alert('Error loading remote data, Your changes will only be stored locally');
+        return;
+      }
+      alert('There was a problem loading prize Data! No local Data, check Internet Connection.');
       console.dir(err);
       return;
     }
-    //not sure why I have to parse this twice, but it does not work when I parse it only once
-    console.log('data:', data);
-    console.log('data one parse:', JSON.parse(data));
     prizeData = JSON.parse(data);
-    console.log('prizeData:', prizeData);
     window.localStorage.setItem('prizeData', data);
     configureUi(prizeData);
   });

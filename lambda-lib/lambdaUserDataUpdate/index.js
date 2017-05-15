@@ -10,7 +10,7 @@ const secret = process.env.SECRET;
 exports.handler = (event, context, cb) => {
   const token = event.headers["Authorization"];
   const forkMe = childProcess.fork('./fork-me');
-  forkMe.send({token: token, secret: secret, data: event.data});
+  forkMe.send({token: token, secret: secret, data: event.body});
   forkMe.on('message', (m) => {
     if(m) cb(null, m);//m equals true for successful write
     if(m.err) cb(m.err, null);//err= 1 indicates an expired token

@@ -20,7 +20,7 @@ describe('view', () => {
   describe('view.placePartEntryUnit', () => {
 
   });
-  describe('view.enlargeCard', () => {
+  describe('view.cardSelected', () => {
 
   });
 });

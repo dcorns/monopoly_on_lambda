@@ -14,16 +14,19 @@ process.on('message', (m) => {
 });
 
 const startUpdate = (token, secret, data) => {
+  console.log('data:',data);
   const prizeIdx = data.prizeIdx.toString();
-  const partQuantityIdx = data.partQuantityIdx.toString();
-  const setValue = parseInt(data.setValue,10);//put in try block later
+  //const partQuantityIdx = data.partQuantityIdx.toString();
+  //const setValue = parseInt(data.setValue,10);//put in try block later
+  const prize = data.prize;
   const userAuth = parseToken(token, secret);
   if (userAuth.exp <= Date.now()){
     process.send({err: 1});//Expired token(err = 1)
   }
   else{
-    const dataRef = db(createPartQuantityPath(userAuth.guid, prizeIdx, partQuantityIdx));
-    upDateData(dataRef, setValue).then((res) => {
+    //const dataRef = db(createPartQuantityPath(userAuth.guid, prizeIdx, partQuantityIdx));
+    const dataRef = db(`${userAuth.guid}/${prizeIdx}`);
+    upDateData(dataRef, prize).then((res) => {
       if(res.err) process.send(res.err);
       process.send(res.data);
     });

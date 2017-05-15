@@ -5,10 +5,12 @@
  * MIT Licensed
  */
 'use strict';
+const objEqual = require('./objects-are-equal');
 const writeConfirmed = (ref, data) => {
   return new Promise((resolve, reject) => {
     ref.on('value', (snapshot) => {
-      resolve(snapshot.val() === data);
+      let areEqual =objEqual(snapshot.val(), data);
+      resolve(areEqual);
     })
   })
 };
