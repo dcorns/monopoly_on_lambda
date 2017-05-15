@@ -338,8 +338,7 @@ function reset(e) {
   view.addTxt14.setAttribute('x', '500');
   view.svgRoot.setAttribute('viewBox', '-400 -300 800 690');
   if (prizeChanged(store.current.prize.tickets.partList)) {
-    console.log('updating prize');
-    updatePrize(store.current.prize, store.current.prizeIndex);
+    store.updatePrize(store.current.prize, store.current.prizeIndex);
   }
 }
 function adjustTicketQuantity(addBtn, qidx, q) {
@@ -347,7 +346,7 @@ function adjustTicketQuantity(addBtn, qidx, q) {
   if (store.current.prize.tickets.partList[qidx] < 0) store.current.prize.tickets.partList[qidx] = 0;
   addBtn.textContent = store.current.prize.tickets.partList[qidx];
 }
-function updatePrize(prize, prizeIdx) {
+store.updatePrize = (prize, prizeIdx) => {
   if (!prize.tickets.winner) {
     let ticket = checkForRareTicket(prize);
     if (ticket) {
@@ -364,7 +363,7 @@ function updatePrize(prize, prizeIdx) {
     }, localStorage.getItem('token'));
   }
   store.updateLocalPrizeData(prize, prizeIdx);
-}
+};
 function ajaxPostJson(url, jsonData, cb, token) {
   const ajaxReq = new XMLHttpRequest();
   ajaxReq.addEventListener('load', function () {
@@ -392,7 +391,7 @@ function ajaxPostJson(url, jsonData, cb, token) {
 
 }
 function prizeChanged(partList) {
-  //if(!grids.rowsEqual(partList, prizeData[currentIndex].tickets.partList)) return true;
+  //prize changed if any partList quantities changed or if winner field changed, but I think that a quantity has to change for the winner field to change anyway
   let c = 0;
   for (c; c < partList.length; c++) {
     if (partList[c] !== prizeData[store.current.prizeIndex].tickets.partList[c]) return true;
@@ -484,7 +483,7 @@ function ticketInput(value) {
     if (winner) youWin(prize.viewId);
     else addTicketMessage(prize.viewId, ticket, prize.tickets.partList[prize.tickets.partList.indexOf(ticket) + 1] + 1, prize);
     store.incrementTicketPartQuantity(ticketIdx, ticket, 1);
-    updatePrize(prize, prize.current.prizeIndex);
+    store.updatePrize(prize, prize.current.prizeIndex);
   }
 }
 function youWin(viewId) {
@@ -532,6 +531,7 @@ const requestToken = (emailOrPhone, cb) => {
 };
 const logIn = () => {
   view.toggleCredentialView();
+  document.getElementById('emailOrPhone').focus();
 };
 const issueToken = (hash) => {
   ajaxPostJson(authorizationResource,{hash: hash}, (err, resData) => {
