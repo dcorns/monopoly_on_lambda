@@ -496,16 +496,16 @@ function youWin(viewId) {
 function addTicketMessage(viewId, ticket, value, prize) {
   if (!(viewId)) {
     alert('Game piece not found: ' + ticket);
-    document.getElementById('ticket').value = '';
   }
   else {
     if (view.current.prize && !Object.is(view.current.prize, prize)) view.setWinningTicketOnPrizeCard(view.current.prize);
     view.setCurrent('prize', prize);
     document.getElementById(`w${prize.viewId.substr(1)}`).textContent = `${ticket} = ${value}`;
   }
+  document.getElementById('ticket').value = '';
 }
 document.getElementById('btnEnter').addEventListener('click', function () {
-  ticketInput();
+  ticketInput(document.getElementById('ticket').value.toUpperCase());
 });
 document.getElementById('ticket').addEventListener('keyup', function (e) {
   if (e.keyCode === 13) {
@@ -552,7 +552,6 @@ const getUserData = () => {
       if(cacheData){
         prizeData = JSON.parse(cacheData);
         configureUi(prizeData);
-        alert('Your login session has ended, login again to avoid losing local changes');
         return;
       }
     }
