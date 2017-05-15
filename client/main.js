@@ -79,7 +79,7 @@ const defineViewFunctions = (view) => {
       document.getElementById(`w${prize.viewId.substr(1)}`).textContent = winningTicket;
     }
     else {
-      document.getElementById(`w${prize.viewId.substr(1)}`).textContent = 'Winner Unknown';
+      document.getElementById(`w${prize.viewId.substr(1)}`).textContent = '';
     }
   };
   view.cardSelected = (target) => {
@@ -357,6 +357,8 @@ store.updatePrize = (prize, prizeIdx) => {
     ajaxPostJson(updateUserDataResource, {prizeIdx: prizeIdx, prize: prize}, function (err, data) {
       if (err) {
         console.dir(err);
+        if(err.err === 1) alert('For security reasons your session has ended. Data will only store locally until logged in');
+        view.toggle('btnLogin');
         return;
       }
       console.log(data);
@@ -483,7 +485,7 @@ function ticketInput(value) {
     if (winner) youWin(prize.viewId);
     else addTicketMessage(prize.viewId, ticket, prize.tickets.partList[prize.tickets.partList.indexOf(ticket) + 1] + 1, prize);
     store.incrementTicketPartQuantity(ticketIdx, ticket, 1);
-    store.updatePrize(prize, prize.current.prizeIndex);
+    store.updatePrize(prize, ticketIdx);
   }
 }
 function youWin(viewId) {
@@ -528,6 +530,7 @@ const requestToken = (emailOrPhone, cb) => {
   ajaxPostJson(loginResource, data, (err, resData) => {
     cb(`'requestTokenResponse:', ${resData}`);
   });
+  view.toggle('btnLogin');
 };
 const logIn = () => {
   view.toggleCredentialView();
@@ -552,15 +555,16 @@ const getUserData = () => {
       if(cacheData){
         prizeData = JSON.parse(cacheData);
         configureUi(prizeData);
+        view.toggle('btnLogin');
         return;
       }
     }
-    view.toggle('btnLogin');
     prizeData = data;
     configureUi(prizeData);
   }, window.localStorage.getItem('token'));
 };
 if(window.localStorage.getItem('token')){
+  view.toggle('btnLogin');
   getUserData();
 }
 else{
