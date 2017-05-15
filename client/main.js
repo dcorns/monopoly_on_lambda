@@ -556,6 +556,7 @@ const getUserData = () => {
         return;
       }
     }
+    view.toggle('btnLogin');
     prizeData = data;
     configureUi(prizeData);
   }, window.localStorage.getItem('token'));
