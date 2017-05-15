@@ -7,7 +7,6 @@
 const grids = require('../modules/drc-grids');
 const view = {};//view will be responsible for all view state changes and elements
 let loggedIn = false;
-let hasToken = false;
 let currentPrize;
 let currentIndex;
 const acquireView = (view) => {
@@ -48,7 +47,6 @@ const acquireView = (view) => {
   view.addTxt14 = document.getElementById("addTxt14");
 };
 //Store will be responsible for all data state
-
 let prizeData = [];
 const store = {
   current:{
@@ -349,23 +347,23 @@ function adjustTicketQuantity(addBtn, qidx, q) {
   if (store.current.prize.tickets.partList[qidx] < 0) store.current.prize.tickets.partList[qidx] = 0;
   addBtn.textContent = store.current.prize.tickets.partList[qidx];
 }
-
 function updatePrize(prize, prizeIdx) {
-
   if (!prize.tickets.winner) {
     let ticket = checkForRareTicket(prize);
     if (ticket) {
       prize.tickets.winner = ticket;
     }
   }
-  ajaxPostJson(updateUserDataResource, {prizeIdx: prizeIdx, prize: prize}, function (err, data) {
-    if (err) {
-      console.dir(err);
-      return;
-    }
-    console.log(data);
-
-  }, localStorage.getItem('token'));
+  if(localStorage.getItem('token')){
+    ajaxPostJson(updateUserDataResource, {prizeIdx: prizeIdx, prize: prize}, function (err, data) {
+      if (err) {
+        console.dir(err);
+        return;
+      }
+      console.log(data);
+    }, localStorage.getItem('token'));
+  }
+  store.updateLocalPrizeData(prize, prizeIdx);
 }
 function ajaxPostJson(url, jsonData, cb, token) {
   const ajaxReq = new XMLHttpRequest();
@@ -584,6 +582,11 @@ else{
     configureUi(prizeData);
   });
 }
+store.updateLocalPrizeData = (prize, prizeIdx) => {
+  prizeData[prizeIdx] = prize;
+  window.localStorage.setItem('prizeData', JSON.stringify(prizeData));
+  configureUi(prizeData);
+};
 //Pure functions
 const isAWinningTicket = (ticketId, ticketAry) => {
   return ticketAry.find((prizeTicket) => prizeTicket.winner === ticketId);
