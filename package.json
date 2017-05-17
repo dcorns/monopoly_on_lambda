@@ -1,7 +1,7 @@
 {
   "name": "monopoly_on_lambda",
   "version": "1.0.0",
-  "description": "Back end for monopoly prize tracking for deployment to AWS Lambda",
+  "description": "Collect and win prize tracking",
   "main": "lambda.js",
   "repository": "https://github.com/dcorns/monopoly_on_lambda.git",
   "author": "Dale Corns <codecantor@gmail.com>",
@@ -17,7 +17,8 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "jsdom": "^10.1.0",
     "mocha": "^3.3.0",
-    "jsdom": "^10.1.0"
+    "proxyquire": "^1.8.0"
   }
 }
