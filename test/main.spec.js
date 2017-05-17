@@ -6,7 +6,7 @@
 'use strict';
 const expect = require('chai').expect;
 describe('view', () => {
-  describe('view.placeLargeButton', () => {
+  describe('view.setCurrent', () => {
     it('isTrue', () => {
       expect(true).to.be.true;
     });

@@ -1,11 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Monopoly Prize Tracker</title>
-    <link rel="stylesheet" type="text/css" href="./main.css">
-</head>
-<body>
+/**
+ * acquire-large-card-view.spec.js
+ * Created by dcorns on 5/16/17
+ * Copyright © 2017 Dale Corns
+ * MIT Licensed
+ */
+'use strict';
+const expect = require('chai').expect;
+const jsdom = require('jsdom');
+const {JSDOM} = jsdom;
+const acquireLargeCardView = require('../modules/acquire-large-card-view');
+
+describe('acquireLargeCardView', () => {
+  global.dom = new JSDOM(`<body>
 <input id="ticket" type="text" placeholder="enter prize piece number"><button id="btnEnter" type="button">ENTER</button>
 <button id="btnLogin" type="button">LOGIN
 </button><input id="emailOrPhone" type="text" placeholder="Enter email address or texting number to receive access" class="hide"><button id="btnSendTokenRequest" type="button" class="hide">SEND</button>
@@ -210,6 +216,16 @@
         <text id="addTxt14" class="addTxt" x="-500" y="-400" font-size="8" text-anchor="middle" pointer-events="none">0</text>
     </svg>
 </main>
-<script src="pack.js" type="application/javascript"></script>
-</body>
-</html>
+</body>`);
+  global.document = dom.window.document;
+
+  it('adds large card dom elements to the view object', () => {
+    console.log(document);
+    let view = {};
+    acquireLargeCardView(view);
+    expect(Object.keys(view).length).to.equal(35);
+    Object.keys(view).map((el) => {
+      expect(view[el].id).to.equal(el);
+    })
+  });
+});

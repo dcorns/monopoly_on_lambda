@@ -5,49 +5,11 @@
  */
 'use strict';
 const grids = require('../modules/drc-grids');
+const acquireLargeCardView = require('../modules/acquire-large-card-view');
 const view = {};//view will be responsible for all view state changes and elements
 let loggedIn = false;
-let currentPrize;
-let currentIndex;
-const acquireView = (view) => {
-  view.largeCardClose = document.getElementById("goBack");
-  view.svgRoot = document.getElementById("prizes");//root svg element
-  view.largeCardSubTitle = document.getElementById("winnerTxt");
-  view.btnAdd0 = document.getElementById("add0");
-  view.btnAdd2 = document.getElementById("add2");
-  view.btnAdd4 = document.getElementById("add4");
-  view.btnAdd6 = document.getElementById("add6");
-  view.btnAdd8 = document.getElementById("add8");
-  view.btnAdd10 = document.getElementById("add10");
-  view.btnAdd12 = document.getElementById("add12");
-  view.btnAdd14 = document.getElementById("add14");
-  view.minus0 = document.getElementById("minus0");
-  view.minus2 = document.getElementById("minus2");
-  view.minus4 = document.getElementById("minus4");
-  view.minus6 = document.getElementById("minus6");
-  view.minus8 = document.getElementById("minus8");
-  view.minus10 = document.getElementById("minus10");
-  view.minus12 = document.getElementById("minus12");
-  view.minus14 = document.getElementById("minus14");
-  view.part1 = document.getElementById("part1");
-  view.part2 = document.getElementById("part2");
-  view.part3 = document.getElementById("part3");
-  view.part4 = document.getElementById("part4");
-  view.part5 = document.getElementById("part5");
-  view.part6 = document.getElementById("part6");
-  view.part7 = document.getElementById("part7");
-  view.part8 = document.getElementById("part8");
-  view.addTxt0 = document.getElementById("addTxt0");
-  view.addTxt2 = document.getElementById("addTxt2");
-  view.addTxt4 = document.getElementById("addTxt4");
-  view.addTxt6 = document.getElementById("addTxt6");
-  view.addTxt8 = document.getElementById("addTxt8");
-  view.addTxt10 = document.getElementById("addTxt10");
-  view.addTxt12 = document.getElementById("addTxt12");
-  view.addTxt14 = document.getElementById("addTxt14");
-};
-//Store will be responsible for all data state
 let prizeData = [];
+//Store will be responsible for all data state
 const store = {
   current:{
     prizeIndex:0,
@@ -67,10 +29,7 @@ const defineViewFunctions = (view) => {
     view.current[prop] = val;
   };
   view.positionViewBox = (x, y, elId) => {
-    let el = document.getElementById(elId);
-    //let test = el.getAttribute('viewBox');
-    let w = el.width.baseVal.value;
-    let allofit = el.viewBox.baseVal;
+    const el = document.getElementById(elId);
     el.setAttribute('viewBox', `${x} ${y} 112 95`);
   };
   view.setWinningTicketOnPrizeCard = (prize) => {
@@ -85,13 +44,13 @@ const defineViewFunctions = (view) => {
   view.cardSelected = (target) => {
     const x = target.x.baseVal.value;
     const y = target.y.baseVal.value;
-    view.positionViewBox(x,y,'prizes');
+    view.positionViewBox(x,y,'svgRoot');
 
     const prizeId = target.id.substr(1);
     document.getElementById(`w${prizeId}`).classList.add('less');
     const prizeIdx = prizeData.findIndex((pd) => pd.viewId === target.id);
-    currentPrize = store.setCurrentPrize(prizeData[prizeIdx]);
-    currentIndex = prizeIdx;
+    //currentPrize = store.setCurrentPrize(prizeData[prizeIdx]);
+    //currentIndex = prizeIdx;
     store.current.prizeIndex = prizeIdx;
     store.current.prize = store.setCurrentPrize(prizeData[store.current.prizeIndex]);
     const largeCardHeaderBottom = 30.5;
@@ -114,8 +73,8 @@ const defineViewFunctions = (view) => {
     view.part1.setAttribute('x', (x + partC1Xoffset).toString());
     view.part1.setAttribute('y', (y + 35).toString());
     view.part1.textContent = prizeData[prizeIdx].tickets.partList[0];
-    view.minus0.setAttribute('cx', (x + minusC1Xoffset).toString());
-    view.minus0.setAttribute('cy', (y + btnRow1Offset).toString());
+    view.btnMinus0.setAttribute('cx', (x + minusC1Xoffset).toString());
+    view.btnMinus0.setAttribute('cy', (y + btnRow1Offset).toString());
 
     view.btnAdd2.setAttribute('cx', (x + addC2Xoffset).toString());
     view.btnAdd2.setAttribute('cy', (y + btnRow1Offset).toString());
@@ -125,8 +84,8 @@ const defineViewFunctions = (view) => {
     view.part2.setAttribute('x', (x + partC2Xoffset).toString());
     view.part2.setAttribute('y', (y + 35).toString());
     view.part2.textContent = prizeData[prizeIdx].tickets.partList[2];
-    view.minus2.setAttribute('cx', (x + minusC2Xoffset).toString());
-    view.minus2.setAttribute('cy', (y + btnRow1Offset).toString());
+    view.btnMinus2.setAttribute('cx', (x + minusC2Xoffset).toString());
+    view.btnMinus2.setAttribute('cy', (y + btnRow1Offset).toString());
 
     view.btnAdd4.setAttribute('cx', (x + addC1Xoffset).toString());
     view.btnAdd4.setAttribute('cy', (y + 45).toString());
@@ -136,8 +95,8 @@ const defineViewFunctions = (view) => {
     view.part3.setAttribute('x', (x + partC1Xoffset).toString());
     view.part3.setAttribute('y', (y + 48).toString());
     view.part3.textContent = prizeData[prizeIdx].tickets.partList[4];
-    view.minus4.setAttribute('cx', (x + minusC1Xoffset).toString());
-    view.minus4.setAttribute('cy', (y + 45).toString());
+    view.btnMinus4.setAttribute('cx', (x + minusC1Xoffset).toString());
+    view.btnMinus4.setAttribute('cy', (y + 45).toString());
 
     view.btnAdd6.setAttribute('cx', (x + addC2Xoffset).toString());
     view.btnAdd6.setAttribute('cy', (y + 45).toString());
@@ -147,8 +106,8 @@ const defineViewFunctions = (view) => {
     view.part4.setAttribute('x', (x + partC2Xoffset).toString());
     view.part4.setAttribute('y', (y + 48).toString());
     view.part4.textContent = prizeData[prizeIdx].tickets.partList[6];
-    view.minus6.setAttribute('cx', (x + minusC2Xoffset).toString());
-    view.minus6.setAttribute('cy', (y + 45).toString());
+    view.btnMinus6.setAttribute('cx', (x + minusC2Xoffset).toString());
+    view.btnMinus6.setAttribute('cy', (y + 45).toString());
 
     if (prizeData[prizeIdx].tickets.partList[8]) {
       view.btnAdd8.setAttribute('cx', (x + addC1Xoffset).toString());
@@ -213,7 +172,7 @@ const defineViewFunctions = (view) => {
     view.toggleLoginView();
   };
 };
-acquireView(view);
+acquireLargeCardView(view);
 defineViewFunctions(view);
 store.setPrizeDataToRemote = (url, cb) => {
   const ajaxReq = new XMLHttpRequest();
@@ -236,55 +195,55 @@ store.incrementTicketPartQuantity = (ticketIdx, ticket, value) => {
 view.svgRoot.addEventListener('click', function (e) {
   try {
     switch (e.target.id) {
-      case 'add0':
+      case 'btnAdd0':
         adjustTicketQuantity(view.addTxt0, 1, 1);
         break;
-      case 'add2':
+      case 'btnAdd2':
         adjustTicketQuantity(view.addTxt2, 3, 1);
         break;
-      case 'add4':
+      case 'btnAdd4':
         adjustTicketQuantity(view.addTxt4, 5, 1);
         break;
-      case 'add6':
+      case 'btnAdd6':
         adjustTicketQuantity(view.addTxt6, 7, 1);
         break;
-      case 'add8':
+      case 'btnAdd8':
         adjustTicketQuantity(view.addTxt8, 9, 1);
         break;
-      case 'add10':
+      case 'btnAdd10':
         adjustTicketQuantity(view.addTxt10, 11, 1);
         break;
-      case 'add12':
+      case 'btnAdd12':
         adjustTicketQuantity(view.addTxt12, 13, 1);
         break;
-      case 'add14':
+      case 'btnAdd14':
         adjustTicketQuantity(view.addTxt14, 15, 1);
         break;
-      case 'minus0':
+      case 'btnMinus0':
         adjustTicketQuantity(view.addTxt0, 1, -1);
         break;
-      case 'minus2':
+      case 'btnMinus2':
         adjustTicketQuantity(view.addTxt2, 3, -1);
         break;
-      case 'minus4':
+      case 'btnMinus4':
         adjustTicketQuantity(view.addTxt4, 5, -1);
         break;
-      case 'minus6':
+      case 'btnMinus6':
         adjustTicketQuantity(view.addTxt6, 7, -1);
         break;
-      case 'minus8':
+      case 'btnMinus8':
         adjustTicketQuantity(view.addTxt8, 9, -1);
         break;
-      case 'minus10':
+      case 'btnMinus10':
         adjustTicketQuantity(view.addTxt10, 11, -1);
         break;
-      case 'minus12':
+      case 'btnMinus12':
         adjustTicketQuantity(view.addTxt12, 13, -1);
         break;
-      case 'minus14':
+      case 'btnMinus14':
         adjustTicketQuantity(view.addTxt14, 15, -1);
         break;
-      case 'goBack':
+      case 'largeCardClose':
         reset(e);
         break;
       case 'btnMenu':
@@ -312,14 +271,14 @@ function reset(e) {
   view.btnAdd12.setAttribute('cx', '500');
   view.btnAdd14.setAttribute('cx', '500');
   view.largeCardClose.setAttribute('cx', '500');
-  view.minus0.setAttribute('cx', '500');
-  view.minus2.setAttribute('cx', '500');
-  view.minus4.setAttribute('cx', '500');
-  view.minus6.setAttribute('cx', '500');
-  view.minus8.setAttribute('cx', '500');
-  view.minus10.setAttribute('cx', '500');
-  view.minus12.setAttribute('cx', '500');
-  view.minus14.setAttribute('cx', '500');
+  view.btnMinus0.setAttribute('cx', '500');
+  view.btnMinus2.setAttribute('cx', '500');
+  view.btnMinus4.setAttribute('cx', '500');
+  view.btnMinus6.setAttribute('cx', '500');
+  view.btnMinus8.setAttribute('cx', '500');
+  view.btnMinus10.setAttribute('cx', '500');
+  view.btnMinus12.setAttribute('cx', '500');
+  view.btnMinus14.setAttribute('cx', '500');
   view.part1.setAttribute('x', '-500');
   view.part2.setAttribute('x', '-500');
   view.part3.setAttribute('x', '-500');
