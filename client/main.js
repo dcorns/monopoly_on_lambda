@@ -389,41 +389,6 @@ function checkForRareTicket(prize) {
   return "";
 }
 /**
- * Set the content for all the prize nodes with the data provided by the array of prize objects
- * @param {Object[]} ary - Array of prize objects
- */
-// function configureCardCollectionView(ary) {
-//   var len = ary.length, c = 0;
-//   for (c; c < len; c++) {
-//     setWinningTicket(ary[c]);
-//     setPrizeTitle(ary[c]);
-//   }
-// }
-// /**
-//  * If a single ticket is left to win a prize set textContent for winning ticket in the prize DOM node to the ticket id.
-//  * @param {Object} prize
-//  * @param {string} prize.viewId - The id of the top level svg that makes up the given prizes DOM node
-//  */
-// function setWinningTicket(prize) {
-//   let ticket, wIdx;
-//   ticket = checkForRareTicket(prize);
-//   if (ticket) {
-//     wIdx = prize.viewId.substr(1);
-//     document.getElementById('w' + wIdx).textContent = ticket;
-//   }
-// }
-// /**
-//  * Set title text of SVG to match the name field of the given prize object
-//  * @param {Object} prize - Object containing all prize data for a single prize
-//  * @param {string} prize.name - Title of prize
-//  * @param {string} prize.viewId - The id of the top level svg that makes up the given prizes DOM node
-//  */
-// function setPrizeTitle(prize) {
-//   var tIdx;
-//   tIdx = prize.viewId.substr(1);
-//   document.getElementById('t' + tIdx).textContent = prize.name;
-// }
-/**
  *
  * @param value
  */
