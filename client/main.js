@@ -328,13 +328,15 @@ store.updatePrize = (prize, prizeIdx) => {
 function ajaxPostJson(url, jsonData, cb, token) {
   const ajaxReq = new XMLHttpRequest();
   ajaxReq.addEventListener('load', function () {
-    if (ajaxReq.status === 200 || ajaxReq.status === 404) cb(null, JSON.parse(ajaxReq.responseText));
+    console.log('status:',ajaxReq.status);
+    if (ajaxReq.status === 200) cb(null, JSON.parse(ajaxReq.responseText));
     else cb(JSON.parse(ajaxReq.responseText), null);
   });
   ajaxReq.addEventListener('error', function (data) {
-    console.dir(ajaxReq);
-    console.dir(data);
-    cb({XMLHttpRequestError: 'A fatal error occurred, see console for more information'}, null);
+    console.log('error response:',ajaxReq);
+    console.dir('error response data',data);
+    cb({XMLHttpRequestError: 'A fatal error occurred, see console for more information',
+    status: ajaxReq.status}, null);
   });
 
 //Must open before setting request header, so this order is required

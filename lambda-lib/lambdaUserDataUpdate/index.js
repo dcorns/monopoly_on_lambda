@@ -12,8 +12,18 @@ exports.handler = (event, context, cb) => {
   const forkMe = childProcess.fork('./fork-me');
   forkMe.send({token: token, secret: secret, data: event.body});
   forkMe.on('message', (m) => {
+    console.log(m);
+    console.log(m.err);
+    if(m.err){
+      context.fail(JSON.stringify({
+        status: 401,
+        errors: [
+          {message: "Token expired"}
+        ]
+
+      }));
+    }
     if(m) cb(null, m);//m equals true for successful write
-    if(m.err) cb(m.err, null);//err= 1 indicates an expired token
     forkMe.kill();
   });
 };
