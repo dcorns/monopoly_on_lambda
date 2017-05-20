@@ -18,3 +18,21 @@
 .hide{
     display: none;
 }
+.warn{
+    color: yellow;
+    padding-left: 2%;
+}
+.error{
+    color: red;
+    padding-left: 2%;
+}
+.info{
+    color: #508EA5;
+    padding: .5%;
+}
+.loggedIn{
+    border: 1px #008000;
+}
+#spInfo{
+    background-color: #000;
+}

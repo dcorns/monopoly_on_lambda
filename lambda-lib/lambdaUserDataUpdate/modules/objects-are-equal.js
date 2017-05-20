@@ -21,7 +21,7 @@ const returnObjectValuesAsArray = (obj) => {
   const keys = Object.keys(obj);
   let ary = [];
   keys.forEach((key)=>{
-    if(typeof obj[key] === 'object') {
+    if(typeof obj[key] === 'object' && obj[key] !== null) {
       let subArray = returnObjectValuesAsArray(obj[key]);
       ary = ary.concat(subArray);
     }

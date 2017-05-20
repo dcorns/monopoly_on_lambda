@@ -11,13 +11,15 @@ const view = {};//view will be responsible for all view state changes and elemen
 let loggedIn = false;
 let prizeData = [];
 //Store will be responsible for all data state
+if(!(window.localStorage.getItem('authorized'))) window.localStorage.setItem('authorized','no');
 const store = {
   current:{
     prizeIndex:0,
     partQuantityIndex:1,
     partQuantityValue:0,
     prize: false
-  }
+  },
+  authorized: window.localStorage.getItem('authorized')
 };
 const loginResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/monoplylogin';
 const remoteDataUrl = 'https://monopoly-d9e3c.firebaseio.com/bob.json';
@@ -172,9 +174,27 @@ const defineViewFunctions = (view) => {
     view.toggleLoginView();
   };
 };
+view.spInfo = document.getElementById('spInfo');
+view.setSpView = (el, cls, txt) => {
+  el.innerText = txt;
+  const clsList = el.classList;
+  clsList.add(cls);
+  if(cls === 'error') {
+    clsList.remove('info');
+    clsList.remove('warn');
+  }
+  if(cls === 'warn') {
+    clsList.remove('info');
+    clsList.remove('error');
+  }
+  if(cls === 'info') {
+    clsList.remove('error');
+    clsList.remove('warn');
+  }
+};
 acquireLargeCardView(view);
 defineViewFunctions(view);
-store.setPrizeDataToRemote = (url, cb) => {
+store.setPrizeDataToDefault = (url, cb) => {
   const ajaxReq = new XMLHttpRequest();
   ajaxReq.addEventListener('load', function () {
     console.log('status',ajaxReq.status);
@@ -312,29 +332,34 @@ store.updatePrize = (prize, prizeIdx) => {
       prize.tickets.winner = ticket;
     }
   }
-  if(localStorage.getItem('token')){
+  if(store.authorized === 'yes'){
+    view.setSpView(view.spInfo,'info',`Updating Remote Data for ${prize.name}`);
     ajaxPostJson(updateUserDataResource, {prizeIdx: prizeIdx, prize: prize}, function (err, data) {
-      if (err) {
-        console.dir(err);
-        if(err.err === 1) alert('For security reasons your session has ended. Data will only store locally until logged in');
-        view.toggle('btnLogin');
-        return;
-      }
-      console.log(data);
+        if(data.errorMessage) {
+          view.setSpView(view.spInfo, 'warn', `Your session has ended, login to store changes on remote`);
+          localStorage.setItem('authorized', 'expired');
+          store.authorized = 'expired';
+          view.toggle('btnLogin');
+        }
+        else{
+          if(data === true){
+            view.setSpView(view.spInfo, 'info', `${prize.name} updated`);
+          }
+        }
     }, localStorage.getItem('token'));
+  }
+  else{
+    view.setSpView(view.spInfo, 'info', `${prize.name} updated locally only, remote will overwrite`);
   }
   store.updateLocalPrizeData(prize, prizeIdx);
 };
 function ajaxPostJson(url, jsonData, cb, token) {
   const ajaxReq = new XMLHttpRequest();
   ajaxReq.addEventListener('load', function () {
-    console.log('status:',ajaxReq.status);
     if (ajaxReq.status === 200) cb(null, JSON.parse(ajaxReq.responseText));
     else cb(JSON.parse(ajaxReq.responseText), null);
   });
-  ajaxReq.addEventListener('error', function (data) {
-    console.log('error response:',ajaxReq);
-    console.dir('error response data',data);
+  ajaxReq.addEventListener('error', function (x) {
     cb({XMLHttpRequestError: 'A fatal error occurred, see console for more information',
     status: ajaxReq.status}, null);
   });
@@ -368,7 +393,7 @@ store.setCurrentPrize = (prize) => {
     available: prize.available,
     tickets: {
       "required": prize.tickets.required,
-      partList: [prize.tickets.partList[0], prize.tickets.partList[1], prize.tickets.partList[2], prize.tickets.partList[3], prize.tickets.partList[4], prize.tickets.partList[5], prize.tickets.partList[6], prize.tickets.partList[7], prize.tickets.partList[8], prize.tickets.partList[9], prize.tickets.partList[10], prize.tickets.partList[11], prize.tickets.partList[12], prize.tickets.partList[13], prize.tickets.partList[14], prize.tickets.partList[15], prize.tickets.partList[16]],
+      partList: prize.tickets.partList.map(item => item),
       winner: prize.tickets.winner
     },
     startAvailable: prize.startAvailable,
@@ -451,6 +476,7 @@ document.getElementById('btnSendTokenRequest').addEventListener('click', () => {
   });
 });
 const requestToken = (emailOrPhone, cb) => {
+  view.setSpView(view.spInfo,'info','Click the link in your email to work with your account');
   view.toggleCredentialView();
   const data = {email: emailOrPhone};
   ajaxPostJson(loginResource, data, (err, resData) => {
@@ -465,6 +491,8 @@ const logIn = () => {
 const issueToken = (hash) => {
   ajaxPostJson(authorizationResource,{hash: hash}, (err, resData) => {
     if(err) console.error(err);
+    localStorage.setItem('authorized','yes');
+    store.authorized = 'yes';
     window.localStorage.setItem('token',resData);
     window.location.hash = '';
     getUserData();
@@ -474,43 +502,81 @@ if(window.location.hash){
   issueToken(window.location.hash.slice(1));
 }
 const getUserData = () => {
+  view.setSpView(view.spInfo, 'info', 'Downloading prize data');
   ajaxPostJson(userDataResource,{'doesnot':'matter'}, (err, data) => {
-    if(err) console.error(err);
-    if(!data) {//No data sent, token expired need to make more standard determination
+    if(err) {
+      console.error(err);
+      view.setSpView(view.spInfo, 'warn', 'Connection to remote data failed. Check Internet connection');
       const cacheData = window.localStorage.getItem('prizeData');
       if(cacheData){
         prizeData = JSON.parse(cacheData);
         configureCardCollectionView(prizeData);
-        view.toggle('btnLogin');
-        return;
       }
+      else{
+        view.setSpView(view.spInfo, 'error', 'No Local Data Found, Connect to Internet to retrieve prize data');
+      }
+      return;
     }
-    prizeData = data;
+    if(data.errorMessage){
+      const cacheData = window.localStorage.getItem('prizeData');
+        if(cacheData){
+          prizeData = JSON.parse(cacheData);
+          configureCardCollectionView(prizeData);
+          view.setSpView(view.spInfo, 'warn', 'Your session has ended. Data will only store locally until logged in. Offline synchronization coming soon.');
+          window.localStorage.setItem('authorized', 'expired');
+          view.toggle('btnLogin');
+        }
+    }
+    else{
+      prizeData = data;
+      window.localStorage.setItem('authorized', 'yes');
+      window.localStorage.setItem('prizeData', JSON.stringify(data));
+      view.setSpView(view.spInfo,'info','Local data updated to by remote');
+    }
     configureCardCollectionView(prizeData);
   }, window.localStorage.getItem('token'));
 };
-if(window.localStorage.getItem('token')){
-  view.toggle('btnLogin');
+
+if(store.authorized === 'yes'){
+  view.spInfo.classList.add('loggedIn');
   getUserData();
 }
 else{
-  store.setPrizeDataToRemote(remoteDataUrl, function (err, data) {
-    if (err) {
-      const cacheData = window.localStorage.getItem('prizeData');
-      if(cacheData){
-        prizeData = JSON.parse(cacheData);
-        configureCardCollectionView(prizeData);
-        alert('Error loading remote data, Your changes will only be stored locally');
-        return;
-      }
-      alert('There was a problem loading prize Data! No local Data, check Internet Connection.');
-      console.dir(err);
-      return;
+  view.spInfo.classList.remove('loggedIn');
+  if(store.authorized === 'expired'){
+    view.setSpView(view.spInfo, 'warn', 'Your session has expired, Login to save changes on remote host.');
+    const cacheData = window.localStorage.getItem('prizeData');
+    if(cacheData){
+      prizeData = JSON.parse(cacheData);
     }
-    prizeData = JSON.parse(data);
-    window.localStorage.setItem('prizeData', data);
+    else{
+      view.setSpView(view.spInfo, 'error', 'No local Data, Login to download data');
+      view.toggle('btnLogin');
+    }
+    view.toggle('btnLogin');
+  }
+  else{//Has no account
+    view.toggle('btnLogin');
+    const cacheData = window.localStorage.getItem('prizeData');
+    if(cacheData){
+      prizeData = JSON.parse(cacheData);
+    }
+    else{
+      store.setPrizeDataToDefault(remoteDataUrl, function (err, data) {
+        view.setSpView(view.spInfo, 'info', 'Initializing Prize Data');
+        if (err) {
+          view.setSpView(view.spInfo, 'error', 'There was a problem initializing prize Data!, check Internet Connection.');
+          return;
+        }
+        prizeData = JSON.parse(data);
+        window.localStorage.setItem('prizeData', data);
+        configureCardCollectionView(prizeData);
+        view.setSpView(view.spInfo, 'info', 'Initial Prize Data Loaded');
+      });
+    }
     configureCardCollectionView(prizeData);
-  });
+  }
+  configureCardCollectionView(prizeData);
 }
 store.updateLocalPrizeData = (prize, prizeIdx) => {
   prizeData[prizeIdx] = prize;

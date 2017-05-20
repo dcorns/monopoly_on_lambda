@@ -15,6 +15,7 @@ const writeConfirmed = (ref, data) => {
   })
 };
 module.exports = (ref, data) => {
+  console.log('update-user-data');
   return new Promise((resolve, reject) => {
     ref.set(data).then(() => {
       writeConfirmed(ref, data).then((result) => {
