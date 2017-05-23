@@ -7,6 +7,7 @@
 const grids = require('../modules/drc-grids');
 const acquireLargeCardView = require('../modules/acquire-large-card-view');
 const configureCardCollectionView = require('../modules/configure-card-collection-view');
+const ajaxPostJson = require('../modules/ajax-post-json');
 const view = {};//view will be responsible for all view state changes and elements
 let loggedIn = false;
 let prizeData = [];
@@ -349,35 +350,35 @@ store.updatePrize = (prize, prizeIdx) => {
     }, localStorage.getItem('token'));
   }
   else{
-    view.setSpView(view.spInfo, 'info', `${prize.name} updated locally only, remote will overwrite`);
+    view.setSpView(view.spInfo, 'error', `${prize.name} updated locally only, remote will overwrite`);
   }
   store.updateLocalPrizeData(prize, prizeIdx);
 };
-function ajaxPostJson(url, jsonData, cb, token) {
-  const ajaxReq = new XMLHttpRequest();
-  ajaxReq.addEventListener('load', function () {
-    if (ajaxReq.status === 200) cb(null, JSON.parse(ajaxReq.responseText));
-    else cb(JSON.parse(ajaxReq.responseText), null);
-  });
-  ajaxReq.addEventListener('error', function (x) {
-    cb({XMLHttpRequestError: 'A fatal error occurred, see console for more information',
-    status: ajaxReq.status}, null);
-  });
-
-//Must open before setting request header, so this order is required
-  ajaxReq.open('POST', url, true);
-  ajaxReq.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-  if (token) {
-    ajaxReq.setRequestHeader('Authorization', token);
-  }
-  if(jsonData) {
-    ajaxReq.send(JSON.stringify(jsonData));
-  }
-  else{
-    ajaxReq.send();
-  }
-
-}
+// function ajaxPostJson(url, jsonData, cb, token) {
+//   const ajaxReq = new XMLHttpRequest();
+//   ajaxReq.addEventListener('load', function () {
+//     if (ajaxReq.status === 200) cb(null, JSON.parse(ajaxReq.responseText));
+//     else cb(JSON.parse(ajaxReq.responseText), null);
+//   });
+//   ajaxReq.addEventListener('error', function (x) {
+//     cb({XMLHttpRequestError: 'A fatal error occurred, see console for more information',
+//     status: ajaxReq.status}, null);
+//   });
+//
+// //Must open before setting request header, so this order is required
+//   ajaxReq.open('POST', url, true);
+//   ajaxReq.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+//   if (token) {
+//     ajaxReq.setRequestHeader('Authorization', token);
+//   }
+//   if(jsonData) {
+//     ajaxReq.send(JSON.stringify(jsonData));
+//   }
+//   else{
+//     ajaxReq.send();
+//   }
+//
+// }
 function prizeChanged(partList) {
   //prize changed if any partList quantities changed or if winner field changed, but I think that a quantity has to change for the winner field to change anyway
   let c = 0;
@@ -536,54 +537,54 @@ const getUserData = () => {
     configureCardCollectionView(prizeData);
   }, window.localStorage.getItem('token'));
 };
-
-if(store.authorized === 'yes'){
-  view.spInfo.classList.add('loggedIn');
-  getUserData();
-}
-else{
-  view.spInfo.classList.remove('loggedIn');
-  if(store.authorized === 'expired'){
-    view.setSpView(view.spInfo, 'warn', 'Your session has expired, Login to save changes on remote host.');
-    const cacheData = window.localStorage.getItem('prizeData');
-    if(cacheData){
-      prizeData = JSON.parse(cacheData);
-    }
-    else{
-      view.setSpView(view.spInfo, 'error', 'No local Data, Login to download data');
+const start = () => {
+  if(store.authorized === 'yes'){
+    view.spInfo.classList.add('loggedIn');
+    getUserData();
+  }
+  else{
+    view.spInfo.classList.remove('loggedIn');
+    if(store.authorized === 'expired'){
+      view.setSpView(view.spInfo, 'warn', 'Your session has expired, Login to save changes on remote host.');
+      const cacheData = window.localStorage.getItem('prizeData');
+      if(cacheData){
+        prizeData = JSON.parse(cacheData);
+      }
+      else{
+        view.setSpView(view.spInfo, 'error', 'No local Data, Login to download data');
+        view.toggle('btnLogin');
+      }
       view.toggle('btnLogin');
     }
-    view.toggle('btnLogin');
-  }
-  else{//Has no account
-    view.toggle('btnLogin');
-    const cacheData = window.localStorage.getItem('prizeData');
-    if(cacheData){
-      prizeData = JSON.parse(cacheData);
-    }
-    else{
-      store.setPrizeDataToDefault(remoteDataUrl, function (err, data) {
-        view.setSpView(view.spInfo, 'info', 'Initializing Prize Data');
-        if (err) {
-          view.setSpView(view.spInfo, 'error', 'There was a problem initializing prize Data!, check Internet Connection.');
-          return;
-        }
-        prizeData = JSON.parse(data);
-        window.localStorage.setItem('prizeData', data);
-        configureCardCollectionView(prizeData);
-        view.setSpView(view.spInfo, 'info', 'Initial Prize Data Loaded');
-      });
+    else{//Has no account
+      view.toggle('btnLogin');
+      const cacheData = window.localStorage.getItem('prizeData');
+      if(cacheData){
+        prizeData = JSON.parse(cacheData);
+      }
+      else{
+        store.setPrizeDataToDefault(remoteDataUrl, function (err, data) {
+          view.setSpView(view.spInfo, 'info', 'Initializing Prize Data');
+          if (err) {
+            view.setSpView(view.spInfo, 'error', 'There was a problem initializing prize Data!, check Internet Connection.');
+            return;
+          }
+          prizeData = JSON.parse(data);
+          window.localStorage.setItem('prizeData', data);
+          configureCardCollectionView(prizeData);
+          view.setSpView(view.spInfo, 'info', 'Initial Prize Data Loaded');
+        });
+      }
+      configureCardCollectionView(prizeData);
     }
     configureCardCollectionView(prizeData);
   }
-  configureCardCollectionView(prizeData);
-}
+};
 store.updateLocalPrizeData = (prize, prizeIdx) => {
   prizeData[prizeIdx] = prize;
   window.localStorage.setItem('prizeData', JSON.stringify(prizeData));
   configureCardCollectionView(prizeData);
 };
-//Pure functions
 const isAWinningTicket = (ticketId, ticketAry) => {
   return ticketAry.find((prizeTicket) => prizeTicket.winner === ticketId);
 };
@@ -592,3 +593,4 @@ const getTicketIdx = (ticketId, aryOfPartsAry) => {
   let grid = aryOfPartsAry.map(row => grids.getRowStrings(row));
   return grids.getRowIdxFromRow(grid, gridRow, 0);
 };
+start();

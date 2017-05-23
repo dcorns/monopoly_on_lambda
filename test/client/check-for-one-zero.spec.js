@@ -6,7 +6,7 @@
  */
 'use strict';
 const expect = require('chai').expect;
-const checkForOneZero = require('../modules/check-for-one-zero');
+const checkForOneZero = require('../../modules/check-for-one-zero');
 describe('checkForOneZero', () => {
   const test = ['a', 3, 'b', 0, 'c', 48, 'd', 9];
   it('returns the previous element value of an element having a value that is uniquely 0', () => {

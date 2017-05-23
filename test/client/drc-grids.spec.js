@@ -1,6 +1,6 @@
 'use strict';
 const expect = require('chai').expect;
-const drcGrids = require('../modules/drc-grids');
+const drcGrids = require('../../modules/drc-grids');
 describe('drc-grids.js', () => {
 
   describe('getRowStrings(row)', () => {

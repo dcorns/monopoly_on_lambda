@@ -9,7 +9,7 @@ const expect = require('chai').expect;
 const jsdom = require('jsdom');
 const proxyquire = require('proxyquire');
 const {JSDOM} = jsdom;
-let configureCardCollectionView = proxyquire('../modules/configure-card-collection-view', {'./check-for-one-zero': () => 'winner text'});
+let configureCardCollectionView = proxyquire('../../modules/configure-card-collection-view', {'./check-for-one-zero': () => 'winner text'});
 
 describe('configureCardCollectionView', () => {
   global.dom = new JSDOM(`<body>

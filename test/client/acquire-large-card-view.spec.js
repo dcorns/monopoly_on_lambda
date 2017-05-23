@@ -8,7 +8,7 @@
 const expect = require('chai').expect;
 const jsdom = require('jsdom');
 const {JSDOM} = jsdom;
-const acquireLargeCardView = require('../modules/acquire-large-card-view');
+const acquireLargeCardView = require('../../modules/acquire-large-card-view');
 
 describe('acquireLargeCardView', () => {
   global.dom = new JSDOM(`<body>
