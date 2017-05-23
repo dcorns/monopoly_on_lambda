@@ -354,31 +354,7 @@ store.updatePrize = (prize, prizeIdx) => {
   }
   store.updateLocalPrizeData(prize, prizeIdx);
 };
-// function ajaxPostJson(url, jsonData, cb, token) {
-//   const ajaxReq = new XMLHttpRequest();
-//   ajaxReq.addEventListener('load', function () {
-//     if (ajaxReq.status === 200) cb(null, JSON.parse(ajaxReq.responseText));
-//     else cb(JSON.parse(ajaxReq.responseText), null);
-//   });
-//   ajaxReq.addEventListener('error', function (x) {
-//     cb({XMLHttpRequestError: 'A fatal error occurred, see console for more information',
-//     status: ajaxReq.status}, null);
-//   });
-//
-// //Must open before setting request header, so this order is required
-//   ajaxReq.open('POST', url, true);
-//   ajaxReq.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-//   if (token) {
-//     ajaxReq.setRequestHeader('Authorization', token);
-//   }
-//   if(jsonData) {
-//     ajaxReq.send(JSON.stringify(jsonData));
-//   }
-//   else{
-//     ajaxReq.send();
-//   }
-//
-// }
+
 function prizeChanged(partList) {
   //prize changed if any partList quantities changed or if winner field changed, but I think that a quantity has to change for the winner field to change anyway
   let c = 0;
