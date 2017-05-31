@@ -8,6 +8,7 @@ const grids = require('../modules/drc-grids');
 const acquireLargeCardView = require('../modules/acquire-large-card-view');
 const configureCardCollectionView = require('../modules/configure-card-collection-view');
 const ajaxPostJson = require('../modules/ajax-post-json');
+const setViewBox = require('../modules/set-view-box');
 const view = {};//view will be responsible for all view state changes and elements
 let loggedIn = false;
 let prizeData = [];
@@ -32,10 +33,6 @@ const defineViewFunctions = (view) => {
   view.setCurrent = (prop, val) => {
     view.current[prop] = val;
   };
-  view.positionViewBox = (x, y, elId) => {
-    const el = document.getElementById(elId);
-    el.setAttribute('viewBox', `${x} ${y} 112 95`);
-  };
   view.setWinningTicketOnPrizeCard = (prize) => {
     const winningTicket = checkForRareTicket(prize);
     if (winningTicket) {
@@ -48,8 +45,7 @@ const defineViewFunctions = (view) => {
   view.cardSelected = (target) => {
     const x = target.x.baseVal.value;
     const y = target.y.baseVal.value;
-    view.positionViewBox(x,y,'svgRoot');
-
+    setViewBox(x,y,112,95,'svgRoot');
     const prizeId = target.id.substr(1);
     document.getElementById(`w${prizeId}`).classList.add('less');
     store.current.prizeIndex = prizeData.findIndex((pd) => pd.viewId === target.id);
