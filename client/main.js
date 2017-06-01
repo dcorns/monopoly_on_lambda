@@ -7,8 +7,8 @@
 const grids = require('../modules/drc-grids');
 const acquireLargeCardView = require('../modules/acquire-large-card-view');
 const configureCardCollectionView = require('../modules/configure-card-collection-view');
+const enlargeCard = require('../modules/enlarge-card');
 const ajaxPostJson = require('../modules/ajax-post-json');
-const setViewBox = require('../modules/set-view-box');
 const view = {};//view will be responsible for all view state changes and elements
 let loggedIn = false;
 let prizeData = [];
@@ -43,119 +43,9 @@ const defineViewFunctions = (view) => {
     }
   };
   view.cardSelected = (target) => {
-    const x = target.x.baseVal.value;
-    const y = target.y.baseVal.value;
-    setViewBox(x,y,112,95,'svgRoot');
-    const prizeId = target.id.substr(1);
-    document.getElementById(`w${prizeId}`).classList.add('less');
+    enlargeCard(target, prizeData, view);
     store.current.prizeIndex = prizeData.findIndex((pd) => pd.viewId === target.id);
     store.current.prize = store.setCurrentPrize(prizeData[store.current.prizeIndex]);
-    const largeCardHeaderBottom = 30.5;
-    const addC1Xoffset = 7, partC1Xoffset = 15, minusC1Xoffset = 44, addC2Xoffset = 66, partC2Xoffset = 74,
-      minusC2Xoffset = 103;
-    const btnRow1Offset = largeCardHeaderBottom + 1.5;
-    const prize = store.current.prize;
-    view.largeCardClose.setAttribute('cx', (x + 105).toString());
-    view.largeCardClose.setAttribute('cy', (y + 5).toString());
-    view.largeCardClose.setAttribute('data-PrizeId', prizeId);
-    view.largeCardSubTitle.setAttribute('x', (x + 55).toString());
-    view.largeCardSubTitle.setAttribute('y', (y + 24).toString());
-    view.largeCardSubTitle.textContent = 'Winning Ticket: ' + prize.tickets.winner;
-//First part add btn
-    view.btnAdd0.setAttribute('cx', (x + addC1Xoffset).toString());
-    view.btnAdd0.setAttribute('cy', (y + btnRow1Offset).toString());
-    view.addTxt0.setAttribute('x', (x + addC1Xoffset).toString());
-    view.addTxt0.setAttribute('y', (y + 34).toString());
-    view.addTxt0.textContent = prize.tickets.partList[1];
-//First part text
-    view.part1.setAttribute('x', (x + partC1Xoffset).toString());
-    view.part1.setAttribute('y', (y + 35).toString());
-    view.part1.textContent = prize.tickets.partList[0];
-//First part remove btn
-    view.btnMinus0.setAttribute('cx', (x + minusC1Xoffset).toString());
-    view.btnMinus0.setAttribute('cy', (y + btnRow1Offset).toString());
-
-    view.btnAdd2.setAttribute('cx', (x + addC2Xoffset).toString());
-    view.btnAdd2.setAttribute('cy', (y + btnRow1Offset).toString());
-    view.addTxt2.setAttribute('x', (x + addC2Xoffset).toString());
-    view.addTxt2.setAttribute('y', (y + 34).toString());
-    view.addTxt2.textContent = prize.tickets.partList[3];
-    view.part2.setAttribute('x', (x + partC2Xoffset).toString());
-    view.part2.setAttribute('y', (y + 35).toString());
-    view.part2.textContent = prize.tickets.partList[2];
-    view.btnMinus2.setAttribute('cx', (x + minusC2Xoffset).toString());
-    view.btnMinus2.setAttribute('cy', (y + btnRow1Offset).toString());
-
-    view.btnAdd4.setAttribute('cx', (x + addC1Xoffset).toString());
-    view.btnAdd4.setAttribute('cy', (y + 45).toString());
-    view.addTxt4.setAttribute('x', (x + addC1Xoffset).toString());
-    view.addTxt4.setAttribute('y', (y + 47).toString());
-    view.addTxt4.textContent = prize.tickets.partList[5];
-    view.part3.setAttribute('x', (x + partC1Xoffset).toString());
-    view.part3.setAttribute('y', (y + 48).toString());
-    view.part3.textContent = prize.tickets.partList[4];
-    view.btnMinus4.setAttribute('cx', (x + minusC1Xoffset).toString());
-    view.btnMinus4.setAttribute('cy', (y + 45).toString());
-
-    view.btnAdd6.setAttribute('cx', (x + addC2Xoffset).toString());
-    view.btnAdd6.setAttribute('cy', (y + 45).toString());
-    view.addTxt6.setAttribute('x', (x + addC2Xoffset).toString());
-    view.addTxt6.setAttribute('y', (y + 47).toString());
-    view.addTxt6.textContent = prize.tickets.partList[7];
-    view.part4.setAttribute('x', (x + partC2Xoffset).toString());
-    view.part4.setAttribute('y', (y + 48).toString());
-    view.part4.textContent = prize.tickets.partList[6];
-    view.btnMinus6.setAttribute('cx', (x + minusC2Xoffset).toString());
-    view.btnMinus6.setAttribute('cy', (y + 45).toString());
-
-    if (prize.tickets.partList[8]) {
-      view.btnAdd8.setAttribute('cx', (x + addC1Xoffset).toString());
-      view.btnAdd8.setAttribute('cy', (y + 58).toString());
-      view.addTxt8.setAttribute('x', (x + addC1Xoffset).toString());
-      view.addTxt8.setAttribute('y', (y + 60).toString());
-      view.addTxt8.textContent = prize.tickets.partList[9];
-      view.part5.setAttribute('x', (x + partC1Xoffset).toString());
-      view.part5.setAttribute('y', (y + 61).toString());
-      view.part5.textContent = prize.tickets.partList[8];
-      view.btnMinus8.setAttribute('cx', (x + minusC1Xoffset).toString());
-      view.btnMinus8.setAttribute('cy', (y + 58).toString());
-      if (prize.tickets.partList[10]) {
-        view.btnAdd10.setAttribute('cx', (x + addC2Xoffset).toString());
-        view.btnAdd10.setAttribute('cy', (y + 58).toString());
-        view.addTxt10.setAttribute('x', (x + addC2Xoffset).toString());
-        view.addTxt10.setAttribute('y', (y + 60).toString());
-        view.addTxt10.textContent = prize.tickets.partList[11];
-        view.part6.setAttribute('x', (x + partC2Xoffset).toString());
-        view.part6.setAttribute('y', (y + 61).toString());
-        view.part6.textContent = prize.tickets.partList[10];
-        view.btnMinus10.setAttribute('cx', (x + minusC2Xoffset).toString());
-        view.btnMinus10.setAttribute('cy', (y + 58).toString());
-        if (prize.tickets.partList[12]) {
-          view.btnAdd12.setAttribute('cx', (x + addC1Xoffset).toString());
-          view.btnAdd12.setAttribute('cy', (y + 71).toString());
-          view.addTxt12.setAttribute('x', (x + addC1Xoffset).toString());
-          view.addTxt12.setAttribute('y', (y + 73).toString());
-          view.addTxt12.textContent = prize.tickets.partList[13];
-          view.part7.setAttribute('x', (x + partC1Xoffset).toString());
-          view.part7.setAttribute('y', (y + 74).toString());
-          view.part7.textContent = prize.tickets.partList[12];
-          view.btnMinus12.setAttribute('cx', (x + minusC1Xoffset).toString());
-          view.btnMinus12.setAttribute('cy', (y + 71).toString());
-          if (prize.tickets.partList[14]) {
-            view.btnAdd14.setAttribute('cx', (x + addC2Xoffset).toString());
-            view.btnAdd14.setAttribute('cy', (y + 71).toString());
-            view.addTxt14.setAttribute('x', (x + addC2Xoffset).toString());
-            view.addTxt14.setAttribute('y', (y + 73).toString());
-            view.addTxt14.textContent = prize.tickets.partList[15];
-            view.part8.setAttribute('x', (x + partC2Xoffset).toString());
-            view.part8.setAttribute('y', (y + 74).toString());
-            view.part8.textContent = prize.tickets.partList[14];
-            view.btnMinus14.setAttribute('cx', (x + minusC2Xoffset).toString());
-            view.btnMinus14.setAttribute('cy', (y + 71).toString());
-          }
-        }
-      }
-    }
   };
   view.toggle = (el) => {
     const elem = document.getElementById(el);
