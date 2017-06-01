@@ -13,12 +13,12 @@ const view = {};//view will be responsible for all view state changes and elemen
 let loggedIn = false;
 let prizeData = [];
 //Store will be responsible for all data state
-if(!(window.localStorage.getItem('authorized'))) window.localStorage.setItem('authorized','no');
+if (!(window.localStorage.getItem('authorized'))) window.localStorage.setItem('authorized', 'no');
 const store = {
-  current:{
-    prizeIndex:0,
-    partQuantityIndex:1,
-    partQuantityValue:0,
+  current: {
+    prizeIndex: 0,
+    partQuantityIndex: 1,
+    partQuantityValue: 0,
     prize: false
   },
   authorized: window.localStorage.getItem('authorized')
@@ -29,6 +29,7 @@ const authorizationResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaw
 const userDataResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/userdata';
 const updateUserDataResource = 'https://pjpk6esqw5.execute-api.us-west-2.amazonaws.com/prod/userdataupdate';
 view.current = {prize: false};
+view.spInfo = document.getElementById('spInfo');
 const defineViewFunctions = (view) => {
   view.setCurrent = (prop, val) => {
     view.current[prop] = val;
@@ -43,48 +44,92 @@ const defineViewFunctions = (view) => {
     }
   };
   view.cardSelected = (target) => {
-    enlargeCard(target, prizeData, view);
+    const prizeIndex = prizeData.findIndex((pd) => pd.viewId === target.id);
+    const prize = prizeData[prizeIndex];
+    const prizeId = target.id.substr(1);
+    document.getElementById(`w${prizeId}`).classList.add('less');
+    view.largeCardClose.setAttribute('data-prizeid', prizeId);//no caps in data- keys
+    view.largeCardSubTitle.textContent = 'Winning Ticket: ' + prize.tickets.winner;
+
+    enlargeCard(target, prize.tickets.partList, view);
+
+    view.toggleLargeCardSvgs();
     store.current.prizeIndex = prizeData.findIndex((pd) => pd.viewId === target.id);
     store.current.prize = store.setCurrentPrize(prizeData[store.current.prizeIndex]);
   };
-  view.toggle = (el) => {
-    const elem = document.getElementById(el);
-    elem.classList.contains('hide') ?  elem.classList.remove('hide') : elem.classList.add('hide');
+  view.toggle = (elId) => {
+    const elem = document.getElementById(elId);
+    elem.classList.contains('hide') ? elem.classList.remove('hide') : elem.classList.add('hide');
   };
   view.toggleTokenRequestView = () => {
     view.toggle('emailOrPhone');
     view.toggle('btnSendTokenRequest');
   };
-  view.toggleLoginView =() => view.toggle('btnLogin');
+  view.toggleLoginView = () => view.toggle('btnLogin');
   view.toggleCredentialView = () => {
     view.toggleTokenRequestView();
     view.toggleLoginView();
   };
-};
-view.spInfo = document.getElementById('spInfo');
-view.setSpView = (el, cls, txt) => {
-  el.innerText = txt;
-  const clsList = el.classList;
-  clsList.add(cls);
-  if(cls === 'error') {
-    clsList.remove('info');
-    clsList.remove('warn');
-  }
-  if(cls === 'warn') {
-    clsList.remove('info');
-    clsList.remove('error');
-  }
-  if(cls === 'info') {
-    clsList.remove('error');
-    clsList.remove('warn');
-  }
+  view.setSpView = (el, cls, txt) => {
+    el.innerText = txt;
+    const clsList = el.classList;
+    clsList.add(cls);
+    if (cls === 'error') {
+      clsList.remove('info');
+      clsList.remove('warn');
+    }
+    if (cls === 'warn') {
+      clsList.remove('info');
+      clsList.remove('error');
+    }
+    if (cls === 'info') {
+      clsList.remove('error');
+      clsList.remove('warn');
+    }
+  };
+  view.toggleLargeCardSvgs = () => {
+    view.toggle(view.largeCardSubTitle.id);
+    view.toggle(view.largeCardClose.id);
+    view.toggle(view.btnAdd0.id);
+    view.toggle(view.btnAdd2.id);
+    view.toggle(view.btnAdd4.id);
+    view.toggle(view.btnAdd6.id);
+    view.toggle(view.btnAdd8.id);
+    view.toggle(view.btnAdd10.id);
+    view.toggle(view.btnAdd12.id);
+    view.toggle(view.btnAdd14.id);
+    view.toggle(view.btnMinus0.id);
+    view.toggle(view.btnMinus2.id);
+    view.toggle(view.btnMinus4.id);
+    view.toggle(view.btnMinus6.id);
+    view.toggle(view.btnMinus8.id);
+    view.toggle(view.btnMinus10.id);
+    view.toggle(view.btnMinus12.id);
+    view.toggle(view.btnMinus14.id);
+    view.toggle(view.part1.id);
+    view.toggle(view.part2.id);
+    view.toggle(view.part3.id);
+    view.toggle(view.part4.id);
+    view.toggle(view.part5.id);
+    view.toggle(view.part6.id);
+    view.toggle(view.part7.id);
+    view.toggle(view.part8.id);
+    view.toggle(view.addTxt0.id);
+    view.toggle(view.addTxt2.id);
+    view.toggle(view.addTxt4.id);
+    view.toggle(view.addTxt6.id);
+    view.toggle(view.addTxt8.id);
+    view.toggle(view.addTxt10.id);
+    view.toggle(view.addTxt12.id);
+    view.toggle(view.addTxt14.id);
+  };
 };
 acquireLargeCardView(view);
 defineViewFunctions(view);
 store.setPrizeDataToDefault = (url, cb) => {
   const ajaxReq = new XMLHttpRequest();
   ajaxReq.addEventListener('load', function () {
-    console.log('status',ajaxReq.status);
+    console.log('status', ajaxReq.status);
     if (ajaxReq.status === 200) cb(null, ajaxReq.responseText);
     else cb(ajaxReq.responseText, null);
   });
@@ -97,6 +142,53 @@ store.setPrizeDataToDefault = (url, cb) => {
 store.incrementTicketPartQuantity = (ticketIdx, ticket, value) => {
   let partList = prizeData[ticketIdx].tickets.partList;
   partList[partList.indexOf(ticket) + 1] += value;
+};
+store.updatePrize = (prize, prizeIdx) => {
+  if (!prize.tickets.winner) {
+    let ticket = checkForRareTicket(prize);
+    if (ticket) {
+      prize.tickets.winner = ticket;
+    }
+  }
+  if (store.authorized === 'yes') {
+    view.setSpView(view.spInfo, 'info', `Updating Remote Data for ${prize.name}`);
+    ajaxPostJson(updateUserDataResource, {prizeIdx: prizeIdx, prize: prize}, function (err, data) {
+      if (data.errorMessage) {
+        view.setSpView(view.spInfo, 'warn', `Your session has ended, login to store changes on remote`);
+        localStorage.setItem('authorized', 'expired');
+        store.authorized = 'expired';
+        view.toggle('btnLogin');
+      }
+      else {
+        if (data === true) {
+          view.setSpView(view.spInfo, 'info', `${prize.name} updated`);
+        }
+      }
+    }, localStorage.getItem('token'));
+  }
+  else {
+    view.setSpView(view.spInfo, 'error', `${prize.name} updated locally only, remote will overwrite`);
+  }
+  store.updateLocalPrizeData(prize, prizeIdx);
+};
+store.setCurrentPrize = (prize) => {
+  return {
+    name: prize.name,
+    value: prize.value,
+    available: prize.available,
+    tickets: {
+      "required": prize.tickets.required,
+      partList: prize.tickets.partList.map(item => item),
+      winner: prize.tickets.winner
+    },
+    startAvailable: prize.startAvailable,
+    viewId: prize.viewId
+  };
+};
+store.updateLocalPrizeData = (prize, prizeIdx) => {
+  prizeData[prizeIdx] = prize;
+  window.localStorage.setItem('prizeData', JSON.stringify(prizeData));
+  configureCardCollectionView(prizeData);
 };
 //add all svg event handlers
 view.svgRoot.addEventListener('click', function (e) {
@@ -151,10 +243,10 @@ view.svgRoot.addEventListener('click', function (e) {
         adjustTicketQuantity(view.addTxt14, 15, -1);
         break;
       case 'largeCardClose':
-        reset(e);
+        resetToAllCards(e);
         break;
       case 'btnMenu':
-          //future feature
+        //future feature
         break;
       default:
         view.cardSelected(e.target);
@@ -165,44 +257,12 @@ view.svgRoot.addEventListener('click', function (e) {
     console.log(e);
   }
 });
-function reset(e) {
-  document.getElementById('w' + e.target.attributes[5].value).classList.remove('less');
-  view.largeCardSubTitle.setAttribute('x', '500');
-  view.largeCardClose.setAttribute('cx', '500');
-  view.btnAdd0.setAttribute('cx', '500');
-  view.btnAdd2.setAttribute('cx', '500');
-  view.btnAdd4.setAttribute('cx', '500');
-  view.btnAdd6.setAttribute('cx', '500');
-  view.btnAdd8.setAttribute('cx', '500');
-  view.btnAdd10.setAttribute('cx', '500');
-  view.btnAdd12.setAttribute('cx', '500');
-  view.btnAdd14.setAttribute('cx', '500');
-  view.largeCardClose.setAttribute('cx', '500');
-  view.btnMinus0.setAttribute('cx', '500');
-  view.btnMinus2.setAttribute('cx', '500');
-  view.btnMinus4.setAttribute('cx', '500');
-  view.btnMinus6.setAttribute('cx', '500');
-  view.btnMinus8.setAttribute('cx', '500');
-  view.btnMinus10.setAttribute('cx', '500');
-  view.btnMinus12.setAttribute('cx', '500');
-  view.btnMinus14.setAttribute('cx', '500');
-  view.part1.setAttribute('x', '-500');
-  view.part2.setAttribute('x', '-500');
-  view.part3.setAttribute('x', '-500');
-  view.part4.setAttribute('x', '-500');
-  view.part5.setAttribute('x', '-500');
-  view.part6.setAttribute('x', '-500');
-  view.part7.setAttribute('x', '-500');
-  view.part8.setAttribute('x', '-500');
-  view.addTxt0.setAttribute('x', '500');
-  view.addTxt2.setAttribute('x', '500');
-  view.addTxt4.setAttribute('x', '500');
-  view.addTxt6.setAttribute('x', '500');
-  view.addTxt8.setAttribute('x', '500');
-  view.addTxt10.setAttribute('x', '500');
-  view.addTxt12.setAttribute('x', '500');
-  view.addTxt14.setAttribute('x', '500');
+function resetToAllCards(e) {
+  document.getElementById(`w${e.target.dataset.prizeid}`).classList.remove('less');
+  view.toggleLargeCardSvgs();
   view.svgRoot.setAttribute('viewBox', '-400 -300 800 690');
+  view.svgRoot.setAttribute('width', 800);
+  view.svgRoot.setAttribute('height', 700);
   if (prizeChanged(store.current.prize.tickets.partList)) {
     store.updatePrize(store.current.prize, store.current.prizeIndex);
   }
@@ -212,35 +272,6 @@ function adjustTicketQuantity(addBtn, qidx, q) {
   if (store.current.prize.tickets.partList[qidx] < 0) store.current.prize.tickets.partList[qidx] = 0;
   addBtn.textContent = store.current.prize.tickets.partList[qidx];
 }
-store.updatePrize = (prize, prizeIdx) => {
-  if (!prize.tickets.winner) {
-    let ticket = checkForRareTicket(prize);
-    if (ticket) {
-      prize.tickets.winner = ticket;
-    }
-  }
-  if(store.authorized === 'yes'){
-    view.setSpView(view.spInfo,'info',`Updating Remote Data for ${prize.name}`);
-    ajaxPostJson(updateUserDataResource, {prizeIdx: prizeIdx, prize: prize}, function (err, data) {
-        if(data.errorMessage) {
-          view.setSpView(view.spInfo, 'warn', `Your session has ended, login to store changes on remote`);
-          localStorage.setItem('authorized', 'expired');
-          store.authorized = 'expired';
-          view.toggle('btnLogin');
-        }
-        else{
-          if(data === true){
-            view.setSpView(view.spInfo, 'info', `${prize.name} updated`);
-          }
-        }
-    }, localStorage.getItem('token'));
-  }
-  else{
-    view.setSpView(view.spInfo, 'error', `${prize.name} updated locally only, remote will overwrite`);
-  }
-  store.updateLocalPrizeData(prize, prizeIdx);
-};
-
 function prizeChanged(partList) {
   //prize changed if any partList quantities changed or if winner field changed, but I think that a quantity has to change for the winner field to change anyway
   let c = 0;
@@ -249,20 +280,6 @@ function prizeChanged(partList) {
   }
   return (store.current.prize.tickets.winner !== prizeData[store.current.prizeIndex].tickets.winner);
 }
-store.setCurrentPrize = (prize) => {
-  return {
-    name: prize.name,
-    value: prize.value,
-    available: prize.available,
-    tickets: {
-      "required": prize.tickets.required,
-      partList: prize.tickets.partList.map(item => item),
-      winner: prize.tickets.winner
-    },
-    startAvailable: prize.startAvailable,
-    viewId: prize.viewId
-  };
-};
 /**
  * Takes a prize object and stores tickets with zero quantities into an array, then checks the length of the array. If the length of the array is equal to one, then it returns that ticket as the winning ticket, else it returns ''
  * @param {Object} prize
@@ -331,7 +348,7 @@ document.getElementById('ticket').addEventListener('keyup', function (e) {
 });
 document.getElementById('ticket').focus();
 document.getElementById('btnLogin').addEventListener('click', () => {
-  if(!(loggedIn)) logIn();
+  if (!(loggedIn)) logIn();
 });
 document.getElementById('btnSendTokenRequest').addEventListener('click', () => {
   requestToken(document.getElementById('emailOrPhone').value, (err, data) => {
@@ -339,7 +356,7 @@ document.getElementById('btnSendTokenRequest').addEventListener('click', () => {
   });
 });
 const requestToken = (emailOrPhone, cb) => {
-  view.setSpView(view.spInfo,'info','Click the link in your email to work with your account');
+  view.setSpView(view.spInfo, 'info', 'Click the link in your email to work with your account');
   view.toggleCredentialView();
   const data = {email: emailOrPhone};
   ajaxPostJson(loginResource, data, (err, resData) => {
@@ -352,79 +369,79 @@ const logIn = () => {
   document.getElementById('emailOrPhone').focus();
 };
 const issueToken = (hash) => {
-  ajaxPostJson(authorizationResource,{hash: hash}, (err, resData) => {
-    if(err) console.error(err);
-    localStorage.setItem('authorized','yes');
+  ajaxPostJson(authorizationResource, {hash: hash}, (err, resData) => {
+    if (err) console.error(err);
+    localStorage.setItem('authorized', 'yes');
     store.authorized = 'yes';
-    window.localStorage.setItem('token',resData);
+    window.localStorage.setItem('token', resData);
     window.location.hash = '';
     getUserData();
   });
 };
-if(window.location.hash){
+if (window.location.hash) {
   issueToken(window.location.hash.slice(1));
 }
 const getUserData = () => {
   view.setSpView(view.spInfo, 'info', 'Downloading prize data');
-  ajaxPostJson(userDataResource,{'doesnot':'matter'}, (err, data) => {
-    if(err) {
+  ajaxPostJson(userDataResource, {'doesnot': 'matter'}, (err, data) => {
+    if (err) {
       console.error(err);
       view.setSpView(view.spInfo, 'warn', 'Connection to remote data failed. Check Internet connection');
       const cacheData = window.localStorage.getItem('prizeData');
-      if(cacheData){
+      if (cacheData) {
         prizeData = JSON.parse(cacheData);
         configureCardCollectionView(prizeData);
       }
-      else{
+      else {
         view.setSpView(view.spInfo, 'error', 'No Local Data Found, Connect to Internet to retrieve prize data');
       }
       return;
     }
-    if(data.errorMessage){
+    if (data.errorMessage) {
       const cacheData = window.localStorage.getItem('prizeData');
-        if(cacheData){
-          prizeData = JSON.parse(cacheData);
-          configureCardCollectionView(prizeData);
-          view.setSpView(view.spInfo, 'warn', 'Your session has ended. Data will only store locally until logged in. Offline synchronization coming soon.');
-          window.localStorage.setItem('authorized', 'expired');
-          view.toggle('btnLogin');
-        }
+      if (cacheData) {
+        prizeData = JSON.parse(cacheData);
+        configureCardCollectionView(prizeData);
+        view.setSpView(view.spInfo, 'warn', 'Your session has ended. Data will only store locally until logged in. Offline synchronization coming soon.');
+        window.localStorage.setItem('authorized', 'expired');
+        view.toggle('btnLogin');
+      }
     }
-    else{
+    else {
       prizeData = data;
       window.localStorage.setItem('authorized', 'yes');
       window.localStorage.setItem('prizeData', JSON.stringify(data));
-      view.setSpView(view.spInfo,'info','Local data updated to by remote');
+      view.setSpView(view.spInfo, 'info', 'Local data updated to by remote');
     }
     configureCardCollectionView(prizeData);
   }, window.localStorage.getItem('token'));
 };
 const start = () => {
-  if(store.authorized === 'yes'){
+  if (store.authorized === 'yes') {
     view.spInfo.classList.add('loggedIn');
     getUserData();
   }
-  else{
+  else {
     view.spInfo.classList.remove('loggedIn');
-    if(store.authorized === 'expired'){
+    if (store.authorized === 'expired') {
       view.setSpView(view.spInfo, 'warn', 'Your session has expired, Login to save changes on remote host.');
       const cacheData = window.localStorage.getItem('prizeData');
-      if(cacheData){
+      if (cacheData) {
         prizeData = JSON.parse(cacheData);
       }
-      else{
+      else {
         view.setSpView(view.spInfo, 'error', 'No local Data, Login to download data');
         view.toggle('btnLogin');
       }
       view.toggle('btnLogin');
     }
-    else{//Has no account
+    else {//Has no account
       view.toggle('btnLogin');
       const cacheData = window.localStorage.getItem('prizeData');
-      if(cacheData){
+      if (cacheData) {
         prizeData = JSON.parse(cacheData);
       }
-      else{
+      else {
         store.setPrizeDataToDefault(remoteDataUrl, function (err, data) {
           view.setSpView(view.spInfo, 'info', 'Initializing Prize Data');
           if (err) {
@@ -441,11 +458,6 @@ const start = () => {
     }
     configureCardCollectionView(prizeData);
   }
-};
-store.updateLocalPrizeData = (prize, prizeIdx) => {
-  prizeData[prizeIdx] = prize;
-  window.localStorage.setItem('prizeData', JSON.stringify(prizeData));
-  configureCardCollectionView(prizeData);
 };
 const isAWinningTicket = (ticketId, ticketAry) => {
   return ticketAry.find((prizeTicket) => prizeTicket.winner === ticketId);
