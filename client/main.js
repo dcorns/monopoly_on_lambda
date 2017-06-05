@@ -7,6 +7,7 @@
 const grids = require('../modules/drc-grids');
 const acquireLargeCardView = require('../modules/acquire-large-card-view');
 const configureCardCollectionView = require('../modules/configure-card-collection-view');
+const initLargeCardData = require('../modules/initialize-large-card-data');
 const enlargeCard = require('../modules/enlarge-card');
 const ajaxPostJson = require('../modules/ajax-post-json');
 const view = {};//view will be responsible for all view state changes and elements
@@ -49,10 +50,9 @@ const defineViewFunctions = (view) => {
     const prizeId = target.id.substr(1);
     document.getElementById(`w${prizeId}`).classList.add('less');
     view.largeCardClose.setAttribute('data-prizeid', prizeId);//no caps in data- keys
-    view.largeCardSubTitle.textContent = 'Winning Ticket: ' + prize.tickets.winner;
 
     enlargeCard(target, prize.tickets.partList, view);
-
+    initLargeCardData(view,prize.tickets);
     view.toggleLargeCardSvgs();
     store.current.prizeIndex = prizeData.findIndex((pd) => pd.viewId === target.id);
     store.current.prize = store.setCurrentPrize(prizeData[store.current.prizeIndex]);
@@ -91,21 +91,22 @@ const defineViewFunctions = (view) => {
     view.toggle(view.largeCardSubTitle.id);
     view.toggle(view.largeCardClose.id);
     view.toggle(view.btnAdd0.id);
+    view.toggle(view.btnAdd1.id);
     view.toggle(view.btnAdd2.id);
+    view.toggle(view.btnAdd3.id);
     view.toggle(view.btnAdd4.id);
+    view.toggle(view.btnAdd5.id);
     view.toggle(view.btnAdd6.id);
-    view.toggle(view.btnAdd8.id);
-    view.toggle(view.btnAdd10.id);
-    view.toggle(view.btnAdd12.id);
-    view.toggle(view.btnAdd14.id);
+    view.toggle(view.btnAdd7.id);
     view.toggle(view.btnMinus0.id);
+    view.toggle(view.btnMinus1.id);
     view.toggle(view.btnMinus2.id);
+    view.toggle(view.btnMinus3.id);
     view.toggle(view.btnMinus4.id);
+    view.toggle(view.btnMinus5.id);
     view.toggle(view.btnMinus6.id);
-    view.toggle(view.btnMinus8.id);
-    view.toggle(view.btnMinus10.id);
-    view.toggle(view.btnMinus12.id);
-    view.toggle(view.btnMinus14.id);
+    view.toggle(view.btnMinus7.id);
+    view.toggle(view.part0.id);
     view.toggle(view.part1.id);
     view.toggle(view.part2.id);
     view.toggle(view.part3.id);
@@ -113,15 +114,14 @@ const defineViewFunctions = (view) => {
     view.toggle(view.part5.id);
     view.toggle(view.part6.id);
     view.toggle(view.part7.id);
-    view.toggle(view.part8.id);
     view.toggle(view.addTxt0.id);
+    view.toggle(view.addTxt1.id);
     view.toggle(view.addTxt2.id);
+    view.toggle(view.addTxt3.id);
     view.toggle(view.addTxt4.id);
+    view.toggle(view.addTxt5.id);
     view.toggle(view.addTxt6.id);
-    view.toggle(view.addTxt8.id);
-    view.toggle(view.addTxt10.id);
-    view.toggle(view.addTxt12.id);
-    view.toggle(view.addTxt14.id);
+    view.toggle(view.addTxt7.id);
   };
 };
 acquireLargeCardView(view);
@@ -197,50 +197,50 @@ view.svgRoot.addEventListener('click', function (e) {
       case 'btnAdd0':
         adjustTicketQuantity(view.addTxt0, 1, 1);
         break;
+      case 'btnAdd1':
+        adjustTicketQuantity(view.addTxt1, 3, 1);
+        break;
       case 'btnAdd2':
-        adjustTicketQuantity(view.addTxt2, 3, 1);
+        adjustTicketQuantity(view.addTxt2, 5, 1);
+        break;
+      case 'btnAdd3':
+        adjustTicketQuantity(view.addTxt3, 7, 1);
         break;
       case 'btnAdd4':
-        adjustTicketQuantity(view.addTxt4, 5, 1);
+        adjustTicketQuantity(view.addTxt4, 9, 1);
+        break;
+      case 'btnAdd5':
+        adjustTicketQuantity(view.addTxt5, 11, 1);
         break;
       case 'btnAdd6':
-        adjustTicketQuantity(view.addTxt6, 7, 1);
+        adjustTicketQuantity(view.addTxt6, 13, 1);
         break;
-      case 'btnAdd8':
-        adjustTicketQuantity(view.addTxt8, 9, 1);
-        break;
-      case 'btnAdd10':
-        adjustTicketQuantity(view.addTxt10, 11, 1);
-        break;
-      case 'btnAdd12':
-        adjustTicketQuantity(view.addTxt12, 13, 1);
-        break;
-      case 'btnAdd14':
-        adjustTicketQuantity(view.addTxt14, 15, 1);
+      case 'btnAdd7':
+        adjustTicketQuantity(view.addTxt7, 15, 1);
         break;
       case 'btnMinus0':
         adjustTicketQuantity(view.addTxt0, 1, -1);
         break;
+      case 'btnMinus1':
+        adjustTicketQuantity(view.addTxt1, 3, -1);
+        break;
       case 'btnMinus2':
-        adjustTicketQuantity(view.addTxt2, 3, -1);
+        adjustTicketQuantity(view.addTxt2, 5, -1);
+        break;
+      case 'btnMinus3':
+        adjustTicketQuantity(view.addTxt3, 7, -1);
         break;
       case 'btnMinus4':
-        adjustTicketQuantity(view.addTxt4, 5, -1);
+        adjustTicketQuantity(view.addTxt4, 9, -1);
+        break;
+      case 'btnMinus5':
+        adjustTicketQuantity(view.addTxt5, 11, -1);
         break;
       case 'btnMinus6':
-        adjustTicketQuantity(view.addTxt6, 7, -1);
+        adjustTicketQuantity(view.addTxt6, 13, -1);
         break;
-      case 'btnMinus8':
-        adjustTicketQuantity(view.addTxt8, 9, -1);
-        break;
-      case 'btnMinus10':
-        adjustTicketQuantity(view.addTxt10, 11, -1);
-        break;
-      case 'btnMinus12':
-        adjustTicketQuantity(view.addTxt12, 13, -1);
-        break;
-      case 'btnMinus14':
-        adjustTicketQuantity(view.addTxt14, 15, -1);
+      case 'btnMinus7':
+        adjustTicketQuantity(view.addTxt7, 15, -1);
         break;
       case 'largeCardClose':
         resetToAllCards(e);
