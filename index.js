@@ -9,9 +9,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const https = require('https');
-const nodeMailer = require('nodemailer');
-const emailUser = process.env.EMAILUSER;
-const emailPass = process.env.EMAILPASS;
+
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
