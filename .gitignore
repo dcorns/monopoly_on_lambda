@@ -4,7 +4,7 @@ test.json
 mockData.json
 localIndex.js
 client/pack.js
-ses-smtp-dcorns-Credentials.csv
+ses-dns-Credentials.csv
 /firebaseTesting/
 /forkTesting/
 **/**/archive.zip
@@ -15,3 +15,4 @@ ses-smtp-dcorns-Credentials.csv
 /lambda-lib/lambdaLogin/index-test.js
 **/**/lambda-event.json
 **/**/lambdaUserDataUpdate/lambda-context.json
+/ses-dns-Credentials.csv
